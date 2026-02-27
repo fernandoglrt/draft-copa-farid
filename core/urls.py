@@ -6,3 +6,4 @@ urlpatterns = [
     # Puxa todas as rotas do nosso App principal
     path('', include('draftapp.urls')),
 ]
+

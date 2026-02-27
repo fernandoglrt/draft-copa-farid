@@ -25,8 +25,23 @@ SECRET_KEY = 'django-insecure-=hc$x^6&*cg)r1z1x(9%1_)yfhik-@-oeen(s2yu1k4&u@ek_s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+import os
 
+# ... (outras configurações)
+
+# 1. Libera o acesso para o seu domínio
+ALLOWED_HOSTS = ['fernandoqlic.pythonanywhere.com', 'localhost', '127.0.0.1']
+
+# 2. Configuração de arquivos estáticos inteligente
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Verifica se a pasta static existe dentro do app antes de incluir
+STATIC_DIR = os.path.join(BASE_DIR, 'draftapp', 'static')
+if os.path.exists(STATIC_DIR):
+    STATICFILES_DIRS = [STATIC_DIR]
+else:
+    STATICFILES_DIRS = []
 
 # Application definition
 INSTALLED_APPS = [
