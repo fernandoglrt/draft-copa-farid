@@ -30,7 +30,7 @@ import os
 # ... (outras configurações)
 
 # 1. Libera o acesso para o seu domínio
-ALLOWED_HOSTS = ['fernandoqlic.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['fernandoqlic.pythonanywhere.com', 'localhost', '127.0.0.1','*']
 
 # 2. Configuração de arquivos estáticos inteligente
 STATIC_URL = '/static/'
