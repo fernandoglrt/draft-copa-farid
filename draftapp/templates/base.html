@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Draft Online Copa Farid</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-grad-1: #0f2027;
+            --bg-grad-2: #203a43;
+            --bg-grad-3: #2c5364;
+            --gold-primary: #f6d365;
+            --gold-secondary: #fda085;
+            --card-glass: rgba(255, 255, 255, 0.08);
+            --text-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3));
+            background-attachment: fixed;
+            color: var(--text-light);
+            min-height: 100vh;
+            padding-bottom: 50px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass-card {
+            background: var(--card-glass);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Touch-First Inputs & Buttons */
+        .btn-gold {
+            background: linear-gradient(45deg, var(--gold-primary), var(--gold-secondary));
+            border: none;
+            border-radius: 16px;
+            color: #1a1a1a;
+            font-weight: 800;
+            font-size: 1.25rem;
+            min-height: 65px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 10px 20px rgba(246, 211, 101, 0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-gold:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 10px rgba(246, 211, 101, 0.2);
+        }
+
+        .form-select-app {
+            min-height: 65px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid transparent;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            padding: 10px 20px;
+        }
+
+        .form-select-app:focus {
+            box-shadow: 0 0 0 4px rgba(246, 211, 101, 0.4);
+            border-color: var(--gold-primary);
+        }
+
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 1.8rem;
+            background: -webkit-linear-gradient(45deg, var(--gold-primary), var(--gold-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .turn-indicator {
+            background: rgba(255, 50, 50, 0.8);
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            box-shadow: 0 0 25px rgba(255, 50, 50, 0.5);
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 50, 50, 0.7); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(255, 50, 50, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 50, 50, 0); }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark mb-4 pt-4 animate__animated animate__fadeInDown">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="navbar-brand"><i class="fa-solid fa-trophy me-2 text-warning"></i>COPA FARID</span>
+        <a href="{% url 'scout_players' draft.id %}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">
+            <i class="fa-solid fa-magnifying-glass me-2"></i>Scout Center
+        </a>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

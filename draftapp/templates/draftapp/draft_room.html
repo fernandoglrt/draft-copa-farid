@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    /* ==========================================
+       TEMA FUTURISTA / E-SPORTS HUD
+       ========================================== */
+    :root {
+        --cyber-gold: #FFD700;
+        --cyber-dark: #0a0e14;
+        --cyber-border: rgba(255, 215, 0, 0.3);
+        --cyber-text: #e2e8f0;
+    }
+
+    .player-list-container, .picks-log-container {
+        max-height: 55vh;
+        overflow-y: auto;
+        background: var(--cyber-dark);
+        border: 1px solid rgba(255,255,255,0.05);
+        padding: 10px;
+        border-radius: 4px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .player-list-container::-webkit-scrollbar, .picks-log-container::-webkit-scrollbar { display: none; }
+
+    .player-item {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-left: 4px solid #333;
+        border-radius: 2px;
+        color: var(--cyber-text);
+        margin-bottom: 12px;
+        padding: 15px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+    }
+    .player-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+    .player-item.selected {
+        background: linear-gradient(90deg, rgba(255, 215, 0, 0.08) 0%, transparent 100%);
+        border: 1px solid var(--cyber-border);
+        border-left: 4px solid var(--cyber-gold);
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+        transform: translateX(5px);
+    }
+
+    .player-name { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1.4rem; text-transform: uppercase; }
+
+    .ovr-badge-list {
+        background: transparent;
+        color: var(--cyber-gold);
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    .stats-grid-cyber {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px 8px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    @media (min-width: 768px) { .stats-grid-cyber { grid-template-columns: repeat(6, 1fr); gap: 5px; } }
+
+    .stat-box { text-align: center; }
+    .stat-label { display: block; font-size: 0.75rem; color: var(--cyber-gold); font-weight: 800; text-transform: uppercase; }
+    .stat-val { font-weight: 900; font-size: 1.5rem; color: #fff; }
+
+    .btn-scout-cyber {
+        position: absolute;
+        top: 15px;
+        right: 70px;
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.2);
+        color: #aaa;
+        border-radius: 2px;
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        z-index: 10;
+        transition: 0.3s;
+    }
+    .btn-scout-cyber:hover, .player-item.selected .btn-scout-cyber {
+        border-color: var(--cyber-gold); color: var(--cyber-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    }
+
+    .modal-content-cyber { background: var(--cyber-dark); border: 1px solid var(--cyber-border); border-radius: 4px; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+
+    .btn-gold-sharp {
+        background: var(--cyber-gold); color: #000; border: none; border-radius: 2px;
+        font-weight: 900; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 2px;
+        min-height: 60px; width: 100%; transition: all 0.2s;
+    }
+    .btn-gold-sharp:active { transform: scale(0.98); }
+    .btn-gold-sharp:disabled { background: #333; color: #555; }
+
+    /* Estilos do Log do Draft */
+    .pick-log-item {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-left: 3px solid var(--cyber-gold);
+        transition: 0.3s;
+        border-radius: 2px;
+    }
+    .pick-log-item:hover {
+        background: rgba(255,215,0,0.05);
+        transform: translateX(5px);
+    }
+</style>
+
+<div class="text-center mb-4 animate__animated animate__fadeInDown">
+    <h6 class="text-warning text-uppercase letter-spacing-2 fw-bold mb-1">Pick  #{{ draft.current_pick_number }}</h6>
+    <div class="d-inline-block border border-warning px-4 py-2 mt-2" style="background: rgba(255,215,0,0.1); border-radius: 2px;">
+        <span class="fs-5 fw-bold text-light">PRESIDENTE DA VEZ: <span class="text-warning">{{ current_president.username|upper }}</span></span>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7 mb-4 animate__animated animate__fadeInLeft">
+        <div class="p-2 p-md-4 h-100" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px;">
+
+            {% if can_pick %}
+            <form method="POST" id="pickForm">
+                {% csrf_token %}
+                <input type="hidden" name="player_id" id="selectedPlayerId" required>
+
+                <div class="position-relative mb-3">
+                    <i class="fa-solid fa-crosshairs position-absolute top-50 start-0 translate-middle-y ms-3 text-warning"></i>
+                    <input type="text" id="liveSearchInput" class="form-control bg-dark border-secondary text-light ps-5"
+                           style="border-radius: 2px; min-height: 55px; font-size: 1.1rem;"
+                           placeholder="Rastrear jogador..." autocomplete="off">
+                </div>
+
+                <div class="player-list-container mb-4 text-start" id="playersList">
+                    {% for p in available_top_players %}
+                    <div class="player-item"
+                         data-id="{{ p.id }}"
+                         data-name="{{ p.name|lower }}"
+                         data-realname="{{ p.name }}"
+                         data-pos="{{ p.position }}"
+                         data-ovr="{{ p.overall }}"
+                         data-pac="{{ p.pace }}"
+                         data-sho="{{ p.shooting }}"
+                         data-pas="{{ p.passing }}"
+                         data-dri="{{ p.dribbling }}"
+                         data-def="{{ p.defending }}"
+                         data-phy="{{ p.physical }}">
+
+                        <button type="button" class="btn-scout-cyber" onclick="openScoutModal(this, event)">
+                            <i class="fa-solid fa-bolt"></i> Comp
+                        </button>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="player-name">{{ p.name }}</span>
+                                <span class="badge bg-secondary ms-2" style="border-radius: 2px;">{{ p.position }}</span>
+                            </div>
+                            <div class="ovr-badge-list">{{ p.overall }}</div>
+                        </div>
+
+                        <div class="stats-grid-cyber">
+                            <div class="stat-box"><span class="stat-label">PAC</span><span class="stat-val">{{ p.pace }}</span></div>
+                            <div class="stat-box"><span class="stat-label">SHO</span><span class="stat-val">{{ p.shooting }}</span></div>
+                            <div class="stat-box"><span class="stat-label">PAS</span><span class="stat-val">{{ p.passing }}</span></div>
+                            <div class="stat-box"><span class="stat-label">DRI</span><span class="stat-val">{{ p.dribbling }}</span></div>
+                            <div class="stat-box"><span class="stat-label">DEF</span><span class="stat-val">{{ p.defending }}</span></div>
+                            <div class="stat-box"><span class="stat-label">PHY</span><span class="stat-val">{{ p.physical }}</span></div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="p-4 text-center text-light opacity-50 font-monospace">
+                        [ NENHUM SINAL DETECTADO NO RADAR ]
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn-gold-sharp" id="confirmPickBtn" disabled>
+                    TRAVAR ESCOLHA <i class="fa-solid fa-crosshairs ms-2"></i>
+                </button>
+            </form>
+            {% else %}
+            <div class="py-5 text-center">
+                <i class="fa-solid fa-shield-halved fa-4x text-light opacity-25 mb-4"></i>
+                <h3 class="fw-bold text-uppercase letter-spacing-1">Acesso Restrito</h3>
+                <p class="fs-5 text-light opacity-75">Aguardando comando de {{ current_president.username }}.</p>
+                <button onclick="window.location.reload();" class="btn btn-outline-warning mt-3 fw-bold" style="border-radius: 2px;">
+                    <i class="fa-solid fa-satellite-dish me-2"></i> Atualizar Conexão
+                </button>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="col-lg-5 animate__animated animate__fadeInRight">
+        <div class="p-2 p-md-4 h-100" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px;">
+            <h5 class="fw-bold text-warning text-uppercase mb-4 text-center">
+                <i class="fa-solid fa-list-check me-2"></i>Log do Draft
+            </h5>
+
+            {% if request.user.is_superuser %}
+            <form method="POST" onsubmit="return confirm('ALERTA MÁXIMO: Isso vai apagar todas as escolhas de todos os jogadores e voltar para o Pick #1. Tem certeza absoluta?');">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reset">
+                <button type="submit" class="btn btn-outline-danger btn-sm w-100 mb-3 fw-bold text-uppercase letter-spacing-1" style="border-radius: 2px;">
+                    <i class="fa-solid fa-skull me-2"></i> Resetar Draft (Admin)
+                </button>
+            </form>
+            {% endif %}
+
+            <div class="picks-log-container text-start">
+                {% for pick in picks %}
+                <div class="pick-log-item mb-3 p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-warning fw-bold" style="font-size: 0.85rem;">PICK #{{ pick.pick_number }}</span>
+                        <span class="badge bg-dark border border-secondary text-light py-1 px-2" style="font-size: 0.8rem;">
+                            <i class="fa-solid fa-user-tie me-1"></i>{{ pick.president.username|upper }}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="fw-bold text-light fs-5 d-block">{{ pick.player.name }}</span>
+                            <span class="text-muted" style="font-size: 0.8rem;">{{ pick.player.position }}</span>
+                        </div>
+                        <div class="text-warning fw-bold fs-3">{{ pick.player.overall }}</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-5 text-center text-light opacity-50 font-monospace">
+                    [ NENHUMA TRANSFERÊNCIA REGISTRADA AINDA ]
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="scoutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-content-cyber p-2 p-md-4">
+            <div class="modal-header border-0 pb-0 justify-content-center position-relative">
+                <h5 class="modal-title fw-bold text-warning text-uppercase tracking-wider">Análise Tática</h5>
+                <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4 align-items-center">
+                    <div class="col-5 text-center">
+                        <h4 class="fw-bold mb-0 text-uppercase" id="m-name1">Jogador 1</h4>
+                        <span class="badge bg-secondary mb-2" id="m-pos1" style="border-radius: 2px;">POS</span>
+                        <div class="display-3 fw-bold text-warning" id="m-ovr1">99</div>
+                    </div>
+                    <div class="col-2 text-center fs-5 fw-bold text-secondary">VS</div>
+                    <div class="col-5 text-center">
+                        <select class="form-select bg-dark text-light border-secondary mb-2" id="compareSelect" style="border-radius: 2px;">
+                            <option value="">Selecione oponente...</option>
+                            {% for p in available_top_players %}
+                            <option value="{{ p.id }}"
+                                data-name="{{ p.name }}" data-pos="{{ p.position }}" data-ovr="{{ p.overall }}"
+                                data-pac="{{ p.pace }}" data-sho="{{ p.shooting }}" data-pas="{{ p.passing }}"
+                                data-dri="{{ p.dribbling }}" data-def="{{ p.defending }}" data-phy="{{ p.physical }}">
+                                {{ p.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="display-3 fw-bold text-light opacity-50" id="m-ovr2">-</div>
+                    </div>
+                </div>
+                <div id="comparisonStats"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentPlayer1 = {};
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('liveSearchInput');
+        const playerItems = document.querySelectorAll('.player-item');
+        const hiddenInput = document.getElementById('selectedPlayerId');
+        const confirmBtn = document.getElementById('confirmPickBtn');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const termo = e.target.value.toLowerCase().trim();
+                playerItems.forEach(item => {
+                    item.style.display = item.getAttribute('data-name').includes(termo) ? 'block' : 'none';
+                });
+            });
+        }
+
+        playerItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                if(e.target.closest('.btn-scout-cyber')) return;
+                playerItems.forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+                hiddenInput.value = this.getAttribute('data-id');
+                confirmBtn.removeAttribute('disabled');
+            });
+        });
+
+        document.getElementById('compareSelect').addEventListener('change', function() {
+            if(!this.value) {
+                renderComparison(currentPlayer1, null);
+                return;
+            }
+            const opt = this.options[this.selectedIndex];
+            const p2 = {
+                ovr: parseInt(opt.getAttribute('data-ovr')),
+                pac: parseInt(opt.getAttribute('data-pac')),
+                sho: parseInt(opt.getAttribute('data-sho')),
+                pas: parseInt(opt.getAttribute('data-pas')),
+                dri: parseInt(opt.getAttribute('data-dri')),
+                def: parseInt(opt.getAttribute('data-def')),
+                phy: parseInt(opt.getAttribute('data-phy'))
+            };
+
+            const p2OvrElem = document.getElementById('m-ovr2');
+            p2OvrElem.innerText = p2.ovr;
+            p2OvrElem.className = 'display-3 fw-bold text-light';
+            renderComparison(currentPlayer1, p2);
+        });
+    });
+
+    function openScoutModal(btn, event) {
+        event.stopPropagation();
+        const card = btn.closest('.player-item');
+
+        currentPlayer1 = {
+            name: card.getAttribute('data-realname'),
+            pos: card.getAttribute('data-pos'),
+            ovr: parseInt(card.getAttribute('data-ovr')),
+            pac: parseInt(card.getAttribute('data-pac')),
+            sho: parseInt(card.getAttribute('data-sho')),
+            pas: parseInt(card.getAttribute('data-pas')),
+            dri: parseInt(card.getAttribute('data-dri')),
+            def: parseInt(card.getAttribute('data-def')),
+            phy: parseInt(card.getAttribute('data-phy'))
+        };
+
+        document.getElementById('m-name1').innerText = currentPlayer1.name;
+        document.getElementById('m-pos1').innerText = currentPlayer1.pos;
+        document.getElementById('m-ovr1').innerText = currentPlayer1.ovr;
+        document.getElementById('compareSelect').value = "";
+
+        const p2OvrElem = document.getElementById('m-ovr2');
+        p2OvrElem.innerText = "-";
+        p2OvrElem.className = 'display-3 fw-bold text-light opacity-50';
+
+        renderComparison(currentPlayer1, null);
+
+        var myModal = new bootstrap.Modal(document.getElementById('scoutModal'));
+        myModal.show();
+    }
+
+    function renderComparison(p1, p2) {
+        const stats = ['pac', 'sho', 'pas', 'dri', 'def', 'phy'];
+        const labels = ['Pace', 'Shooting', 'Passing', 'Dribbling', 'Defend', 'Physical'];
+        let html = '';
+
+        stats.forEach((stat, index) => {
+            let val1 = p1[stat];
+            let val2 = p2 ? p2[stat] : 0;
+
+            let color1 = 'bg-light'; let color2 = 'bg-light';
+            if(p2) {
+                if(val1 > val2) { color1 = 'bg-success'; color2 = 'bg-danger'; }
+                else if (val1 < val2) { color1 = 'bg-danger'; color2 = 'bg-success'; }
+                else { color1 = 'bg-warning'; color2 = 'bg-warning'; }
+            }
+
+            html += `
+            <div class="mb-3">
+                <div class="d-flex justify-content-between text-uppercase fw-bold font-monospace" style="font-size: 0.9rem;">
+                    <span class="${val1 > val2 && p2 ? 'text-success' : ''}">${val1}</span>
+                    <span class="text-warning opacity-75">${labels[index]}</span>
+                    <span class="${val2 > val1 && p2 ? 'text-success' : ''}">${p2 ? val2 : '-'}</span>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <div class="progress flex-grow-1" style="height: 6px; background: rgba(255,255,255,0.05); transform: scaleX(-1); border-radius: 0;">
+                        <div class="progress-bar ${color1}" style="width: ${val1}%"></div>
+                    </div>
+                    <div class="progress flex-grow-1" style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 0;">
+                        <div class="progress-bar ${color2}" style="width: ${p2 ? val2 : 0}%"></div>
+                    </div>
+                </div>
+            </div>`;
+        });
+        document.getElementById('comparisonStats').innerHTML = html;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<style>
+    /* ==========================================
+       TEMA SCOUT TERMINAL (CYBERPUNK)
+       ========================================== */
+    :root {
+        --cyber-gold: #FFD700;
+        --cyber-dark: #0a0e14;
+        --cyber-border: rgba(255, 215, 0, 0.3);
+        --cyber-text: #e2e8f0;
+        --cyber-bg-panel: rgba(15, 32, 39, 0.85);
+    }
+
+    /* Painel de Filtros */
+    .filter-panel {
+        background: var(--cyber-bg-panel);
+        border: 1px solid var(--cyber-border);
+        border-radius: 4px;
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .filter-label {
+        color: var(--cyber-gold);
+        font-size: 0.75rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .filter-val-display { color: white; font-family: monospace; font-size: 0.9rem; }
+
+    .input-cyber {
+        background: rgba(0,0,0,0.5) !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        color: white !important;
+        border-radius: 2px !important;
+        min-height: 50px;
+        font-size: 1.1rem;
+        transition: 0.3s;
+    }
+    .input-cyber:focus {
+        border-color: var(--cyber-gold) !important;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.1) !important;
+    }
+
+    .range-cyber {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 3px;
+        outline: none;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+    .range-cyber::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 2px;
+        background: var(--cyber-gold);
+        cursor: pointer;
+        box-shadow: 0 0 10px var(--cyber-gold);
+        transform: rotate(45deg);
+        transition: 0.2s;
+    }
+
+    .btn-cyber-outline {
+        background: transparent;
+        border: 1px solid var(--cyber-gold);
+        color: var(--cyber-gold);
+        border-radius: 2px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 10px 20px;
+        transition: 0.3s;
+    }
+    .btn-cyber-outline:hover { background: var(--cyber-gold); color: #000; }
+
+    .table-cyber { background: transparent; color: white; border-collapse: separate; border-spacing: 0 8px; }
+    .table-cyber thead th { background: rgba(0,0,0,0.8); color: var(--cyber-gold); border: none; font-size: 0.85rem; padding: 15px; }
+    .table-cyber tbody tr { background: rgba(255,255,255,0.03); transition: 0.2s; }
+    .table-cyber tbody tr:hover { background: rgba(255, 215, 0, 0.05); transform: scale(1.01); }
+    .table-cyber tbody td { border: none; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 15px; vertical-align: middle; font-size: 1.1rem; }
+    .table-cyber tbody td:first-child { border-left: 3px solid var(--cyber-gold); font-weight: 900; }
+    .table-cyber tbody td:last-child { border-right: 1px solid rgba(255,255,255,0.05); }
+
+    .form-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        background-color: rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.1);
+        cursor: pointer;
+    }
+    .form-switch .form-check-input:checked {
+        background-color: var(--cyber-gold);
+        border-color: var(--cyber-gold);
+    }
+
+    .dataTables_filter { display: none; }
+    .dataTables_length { color: white; margin-bottom: 15px;}
+    .dataTables_length select { background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--cyber-border); border-radius: 2px; }
+    .dataTables_info, .dataTables_paginate { color: var(--cyber-gold) !important; margin-top: 15px; }
+    .paginate_button.current { background: var(--cyber-gold) !important; color: #000 !important; border: none !important;}
+</style>
+
+<div class="animate__animated animate__fadeInDown">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-warning text-uppercase m-0 tracking-wider"><i class="fa-solid fa-satellite-dish me-2"></i>Busca de Jogadores</h3>
+        <a href="{% url 'draft_room' draft.id %}" class="btn-cyber-outline py-2"><i class="fa-solid fa-arrow-left me-2"></i>Voltar</a>
+    </div>
+
+    <div class="filter-panel">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="filter-label"><i class="fa-solid fa-font me-2"></i>Nome do Jogador</label>
+                <input type="text" id="f-name" class="form-control input-cyber" placeholder="Ex: Messi, Ronaldo...">
+            </div>
+
+            <div class="col-md-4">
+                <label class="filter-label"><i class="fa-solid fa-map-pin me-2"></i>Posição</label>
+                <select id="f-pos" class="form-select input-cyber">
+                    <option value="">Qualquer Posição</option>
+                    <option value="GK">Goleiro (GK)</option>
+                    <option value="CB">Zagueiro (CB)</option>
+                    <option value="LB">Lat. Esquerdo (LB)</option>
+                    <option value="RB">Lat. Direito (RB)</option>
+                    <option value="CDM">Volante (CDM)</option>
+                    <option value="CM">Meia Central (CM)</option>
+                    <option value="CAM">Meia Atacante (CAM)</option>
+                    <option value="LM">Meia Esq. (LM)</option>
+                    <option value="RM">Meia Dir. (RM)</option>
+                    <option value="LW">Ponta Esq. (LW)</option>
+                    <option value="RW">Ponta Dir. (RW)</option>
+                    <option value="ST">Centroavante (ST)</option>
+                    <option value="CF">Segundo Atacante (CF)</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="filter-label">
+                    <span><i class="fa-solid fa-star me-2"></i>OVR Mínimo</span>
+                    <span class="filter-val-display" id="val-ovr">0</span>
+                </label>
+                <input type="range" id="f-ovr" class="range-cyber" min="0" max="99" value="0">
+            </div>
+
+            <div class="col-12 mt-3 pt-3 border-top border-secondary">
+                <div class="form-check form-switch d-flex align-items-center">
+                    <input class="form-check-input me-3" type="checkbox" id="f-free-only" checked>
+                    <label class="form-check-label text-warning fw-bold text-uppercase letter-spacing-1" for="f-free-only" style="font-size: 0.85rem;">
+                        Ocultar Jogadores Já Escolhidos (Somente Livres)
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <button class="btn btn-sm btn-link text-light text-decoration-none fw-bold text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+                <i class="fa-solid fa-sliders me-2"></i>Filtro de Atributos Específicos
+            </button>
+        </div>
+
+        <div class="collapse mt-3" id="advancedFilters">
+            <div class="row g-3 pt-3 border-top border-secondary">
+                <div class="col-6 col-md-4"><label class="filter-label"><span>PACE Mín.</span><span class="filter-val-display" id="val-pac">0</span></label><input type="range" id="f-pac" class="range-cyber" min="0" max="99" value="0"></div>
+                <div class="col-6 col-md-4"><label class="filter-label"><span>SHOOT Mín.</span><span class="filter-val-display" id="val-sho">0</span></label><input type="range" id="f-sho" class="range-cyber" min="0" max="99" value="0"></div>
+                <div class="col-6 col-md-4"><label class="filter-label"><span>PASS Mín.</span><span class="filter-val-display" id="val-pas">0</span></label><input type="range" id="f-pas" class="range-cyber" min="0" max="99" value="0"></div>
+                <div class="col-6 col-md-4"><label class="filter-label"><span>DRIBB Mín.</span><span class="filter-val-display" id="val-dri">0</span></label><input type="range" id="f-dri" class="range-cyber" min="0" max="99" value="0"></div>
+                <div class="col-6 col-md-4"><label class="filter-label"><span>DEFEN Mín.</span><span class="filter-val-display" id="val-def">0</span></label><input type="range" id="f-def" class="range-cyber" min="0" max="99" value="0"></div>
+                <div class="col-6 col-md-4"><label class="filter-label"><span>PHYS Mín.</span><span class="filter-val-display" id="val-phy">0</span></label><input type="range" id="f-phy" class="range-cyber" min="0" max="99" value="0"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive" style="min-height: 50vh;">
+        <table id="scoutTable" class="table table-cyber w-100">
+            <thead>
+                <tr>
+                    <th>Jogador</th>
+                    <th>Pos</th>
+                    <th class="text-warning">OVR</th>
+                    <th>PAC</th>
+                    <th>SHO</th>
+                    <th>PAS</th>
+                    <th>DRI</th>
+                    <th>DEF</th>
+                    <th>PHY</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in players %}
+                <tr data-picked="{{ p.is_picked|yesno:'true,false' }}">
+                    <td>
+                        {{ p.name }}
+                        {% if p.is_picked %}
+                            <span class="badge bg-danger ms-2" style="font-size: 0.6rem; letter-spacing: 1px;">INDISPONÍVEL</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge bg-secondary" style="border-radius: 2px;">{{ p.position }}</span></td>
+                    <td class="text-warning fw-bold fs-4">{{ p.overall }}</td>
+                    <td>{{ p.pace }}</td>
+                    <td>{{ p.shooting }}</td>
+                    <td>{{ p.passing }}</td>
+                    <td>{{ p.dribbling }}</td>
+                    <td>{{ p.defending }}</td>
+                    <td>{{ p.physical }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var table = $('#scoutTable').DataTable({
+            "order": [[ 2, "desc" ]],
+            "pageLength": 15,
+            "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'>>" +
+                   "<'row'<'col-sm-12'tr>>" +
+                   "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "language": {
+                "lengthMenu": "Exibir _MENU_ jogadores por página",
+                "info": "Mapeando _START_ a _END_ de _TOTAL_ jogadores",
+                "infoEmpty": "Nenhum jogador detectado",
+                "zeroRecords": "Os sensores não detectaram nenhum jogador disponível com esses parâmetros.",
+                "paginate": { "next": ">>", "previous": "<<" }
+            }
+        });
+
+        $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+                var fName = $('#f-name').val().toLowerCase();
+                var fPos  = $('#f-pos').val();
+                var fOvr  = parseInt($('#f-ovr').val(), 10);
+                var fPac  = parseInt($('#f-pac').val(), 10);
+                var fSho  = parseInt($('#f-sho').val(), 10);
+                var fPas  = parseInt($('#f-pas').val(), 10);
+                var fDri  = parseInt($('#f-dri').val(), 10);
+                var fDef  = parseInt($('#f-def').val(), 10);
+                var fPhy  = parseInt($('#f-phy').val(), 10);
+
+                var showFreeOnly = $('#f-free-only').is(':checked');
+                var isPicked = $(settings.aoData[dataIndex].nTr).attr('data-picked') === 'true';
+
+                if (showFreeOnly && isPicked) return false;
+
+                var cName = data[0].toLowerCase();
+                var cPos  = data[1];
+                var cOvr  = parseFloat(data[2]) || 0;
+                var cPac  = parseFloat(data[3]) || 0;
+                var cSho  = parseFloat(data[4]) || 0;
+                var cPas  = parseFloat(data[5]) || 0;
+                var cDri  = parseFloat(data[6]) || 0;
+                var cDef  = parseFloat(data[7]) || 0;
+                var cPhy  = parseFloat(data[8]) || 0;
+
+                if (fName && !cName.includes(fName)) return false;
+                if (fPos && !cPos.includes(fPos)) return false;
+                if (cOvr < fOvr) return false;
+                if (cPac < fPac) return false;
+                if (cSho < fSho) return false;
+                if (cPas < fPas) return false;
+                if (cDri < fDri) return false;
+                if (cDef < fDef) return false;
+                if (cPhy < fPhy) return false;
+
+                return true;
+            }
+        );
+
+        // Dispara o filtro inicial assim que a tabela carrega (para respeitar o toggle ativado)
+        table.draw();
+
+        $('#f-name, #f-pos').on('keyup change', function() { table.draw(); });
+        $('#f-free-only').on('change', function() { table.draw(); });
+
+        $('.range-cyber').on('input', function() {
+            var val = $(this).val();
+            var id = $(this).attr('id').replace('f-', 'val-');
+            $('#' + id).text(val);
+            table.draw();
+        });
+    });
+</script>
+{% endblock %}
