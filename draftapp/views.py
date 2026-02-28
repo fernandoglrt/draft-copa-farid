@@ -9,7 +9,7 @@ def draft_room(request, draft_id):
     draft = get_object_or_404(Draft, id=draft_id)
 
     # ==========================================================
-    # BOTÃO DE PÂNICO: RESET DO DRAFT (Apenas Superuser/Você)
+    # BOTÃO DE PÂNICO: RESET DO DRAFT (Apenas Superuser)
     # ==========================================================
     if request.method == 'POST' and request.POST.get('action') == 'reset' and request.user.is_superuser:
         Pick.objects.filter(draft=draft).delete()  # Apaga todas as escolhas
@@ -23,7 +23,23 @@ def draft_room(request, draft_id):
     if total_presidents == 0:
         return render(request, 'draftapp/draft_room.html', {'error': 'Ordem não configurada.'})
 
-    current_turn_index = ((draft.current_pick_number - 1) % total_presidents) + 1
+    # ==========================================================
+    # MATEMÁTICA DO SNAKE DRAFT (Bate no fundo e volta)
+    # ==========================================================
+    # Descobre em qual rodada estamos (0 = primeira, 1 = segunda, etc.)
+    current_round = (draft.current_pick_number - 1) // total_presidents
+
+    # Descobre a posição dentro da rodada (de 1 até o total de presidentes)
+    pick_in_round = ((draft.current_pick_number - 1) % total_presidents) + 1
+
+    # Rodadas Pares (0, 2, 4...) -> Ordem Normal (1, 2, 3... 16)
+    if current_round % 2 == 0:
+        current_turn_index = pick_in_round
+    # Rodadas Ímpares (1, 3, 5...) -> Ordem Invertida (16, 15, 14... 1)
+    else:
+        current_turn_index = total_presidents - pick_in_round + 1
+    # ==========================================================
+
     current_turn_order = get_object_or_404(DraftOrder, draft=draft, pick_order=current_turn_index)
 
     can_pick = (request.user == current_turn_order.president) or request.user.is_superuser
