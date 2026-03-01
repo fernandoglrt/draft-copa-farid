@@ -59,14 +59,30 @@ def draft_room(request, draft_id):
             return redirect('draft_room', draft_id=draft.id)
 
     picked_ids = picks.values_list('player_id', flat=True)
-    available_top_players = Player.objects.filter(version=draft.version).exclude(id__in=picked_ids)[:100]
+
+    # 1. Pega o texto que o usuário digitou na pesquisa (se houver)
+    search_query = request.GET.get('q', '')
+
+    # 2. Se ele digitou algo, o Django varre a base INTEIRA procurando aquele nome
+    if search_query:
+        available_top_players = Player.objects.filter(
+            version=draft.version,
+            name__icontains=search_query  # icontains ignora maiúsculas/minúsculas
+        ).exclude(id__in=picked_ids).order_by('-overall')[:50]  # Traz os 50 melhores resultados
+
+    # 3. Se a barra de pesquisa estiver vazia, mostra o Top 100 normal
+    else:
+        available_top_players = Player.objects.filter(
+            version=draft.version
+        ).exclude(id__in=picked_ids).order_by('-overall')[:100]
 
     context = {
         'draft': draft,
         'current_president': current_turn_order.president,
         'can_pick': can_pick,
         'picks': picks,
-        'available_top_players': available_top_players
+        'available_top_players': available_top_players,
+        'search_query': search_query,  # Passa o termo pro HTML não esquecer o que foi digitado
     }
     return render(request, 'draftapp/draft_room.html', context)
 
