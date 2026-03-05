@@ -75,7 +75,7 @@
         cursor: pointer;
     }
     .btn-cyber-outline:hover { background: var(--cyber-gold); color: #000; }
-    
+
     .btn-draft { border-color: var(--cyber-success); color: var(--cyber-success); }
     .btn-draft:hover { background: var(--cyber-success); color: #000; box-shadow: 0 0 15px var(--cyber-success); }
 
@@ -104,7 +104,7 @@
 </style>
 
 <div class="container-fluid py-4 animate__animated animate__fadeInDown">
-    
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-warning text-uppercase m-0" style="letter-spacing: 2px;">
             <i class="fa-solid fa-satellite-dish me-2"></i>SALA DE DRAFT
@@ -130,6 +130,16 @@
         </div>
         {% endif %}
     </div>
+
+    {% if has_late_picks %}
+    <div class="filter-panel turn-panel animate__animated animate__pulse animate__infinite" style="border-bottom: 4px solid var(--cyber-danger); background: rgba(255, 0, 60, 0.1);">
+        <h4 class="text-white m-0" style="font-weight: 300;">
+            <i class="fa-solid fa-triangle-exclamation" style="color: var(--cyber-danger);"></i>
+            VOCÊ TEM <strong style="color: var(--cyber-danger); font-size: 2rem;">{{ missing_pick_count }} ESCOLHA(S) ATRASADA(S)</strong>!
+        </h4>
+        <span style="color: #ccc; font-family: monospace; font-size: 1.1rem; margin-top: 10px; display: inline-block;">Você pode draftar a qualquer momento abaixo para recuperar sua vez!</span>
+    </div>
+    {% endif %}
 
     <div class="filter-panel turn-panel">
         <h4 class="text-white m-0" style="font-weight: 300;">
@@ -166,7 +176,11 @@
                                 <form method="POST" style="margin: 0;">
                                     {% csrf_token %}
                                     <input type="hidden" name="player_id" value="{{ p.id }}">
+                                    {% if has_late_picks and not is_my_turn %}
+                                    <button type="submit" class="btn-cyber-outline btn-danger-cyber">DRAFTAR (ATRASADO)</button>
+                                    {% else %}
                                     <button type="submit" class="btn-cyber-outline btn-draft">Draftar</button>
+                                    {% endif %}
                                 </form>
                                 {% else %}
                                 <span style="color: #666; font-family: monospace; font-size: 0.9rem;">AGUARDE...</span>
@@ -190,7 +204,7 @@
                 <h4 class="text-warning fw-bold mb-4" style="text-transform: uppercase; font-size: 1.1rem; letter-spacing: 1px;">
                     <i class="fa-solid fa-list-check me-2"></i>Registro de Picks
                 </h4>
-                
+
                 {% for pick in picks %}
                 <div class="pick-card">
                     <div class="pick-number">Pick #{{ pick.pick_number }} // {{ pick.president.username }}</div>
@@ -228,14 +242,14 @@
                 typingTimer = setTimeout(function() {
                     // Mostra status de carregamento com o estilo Cyberpunk
                     tableBody.innerHTML = '<tr><td colspan="4" class="text-center py-5" style="color: var(--cyber-gold); font-family: monospace; letter-spacing: 2px;"><i class="fa-solid fa-circle-notch fa-spin me-2"></i>VARRENDO BANCO DE DADOS...</td></tr>';
-                    
+
                     fetch(`?q=${encodeURIComponent(query)}`)
                         .then(response => response.text())
                         .then(html => {
                             const parser = new DOMParser();
                             const doc = parser.parseFromString(html, 'text/html');
                             const newTableBody = doc.getElementById('playerTableBody');
-                            
+
                             if(newTableBody) {
                                 tableBody.innerHTML = newTableBody.innerHTML;
                             }
