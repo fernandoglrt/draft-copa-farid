@@ -17,17 +17,12 @@
     .filter-panel { background: var(--cyber-bg-panel); border: 1px solid var(--cyber-border); border-radius: 4px; backdrop-filter: blur(10px); padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .input-cyber { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; width: 100%; border-radius: 2px; font-size: 1.1rem; transition: 0.3s; }
     .input-cyber:focus { border-color: var(--cyber-gold); outline: none; box-shadow: 0 0 15px rgba(255, 215, 0, 0.1); }
-
     .btn-cyber-outline { background: transparent; border: 1px solid var(--cyber-gold); color: var(--cyber-gold); padding: 8px 15px; font-weight: bold; text-transform: uppercase; transition: 0.3s; cursor: pointer; border-radius: 2px; }
     .btn-cyber-outline:hover { background: var(--cyber-gold); color: #000; }
-
     .btn-danger-cyber { background: transparent; border: 1px solid var(--cyber-danger); color: var(--cyber-danger); padding: 6px 12px; text-transform: uppercase; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 2px; }
     .btn-danger-cyber:hover { background: var(--cyber-danger); color: white; box-shadow: 0 0 10px var(--cyber-danger); }
-
-    /* Estilo do Botão Trade */
     .btn-trade { background: transparent; border: 2px solid var(--cyber-trade); color: var(--cyber-trade); padding: 10px 20px; font-weight: 900; text-transform: uppercase; border-radius: 2px; transition: 0.3s; }
     .btn-trade:hover { background: var(--cyber-trade); color: #000; box-shadow: 0 0 15px var(--cyber-trade); }
-
     .btn-save-lineup { background: var(--cyber-gold); color: #000; border: none; padding: 12px 25px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-radius: 2px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
     .btn-save-lineup:hover { background: #fff; box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); }
 
@@ -35,12 +30,8 @@
     .trade-alert-panel { background: rgba(0, 229, 255, 0.1); border: 2px solid var(--cyber-trade); padding: 15px; border-radius: 5px; margin-bottom: 25px; }
     .trade-box { background: rgba(0,0,0,0.5); padding: 10px; margin-top: 10px; border-left: 3px solid var(--cyber-trade); }
     .trade-player-badge { display: inline-block; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 3px; font-size: 0.85rem; margin: 2px; color: var(--cyber-gold);}
-
-    /* Modal Trade Estilo */
     .modal-content-cyber { background-color: var(--cyber-dark); border: 1px solid var(--cyber-trade); box-shadow: 0 0 30px rgba(0, 229, 255, 0.3); color: white; border-radius: 5px; }
     .trade-list { max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
-
-    /* Custom Checkboxes for Trades */
     .trade-checkbox { display: none; }
     .trade-label { display: block; padding: 10px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px; cursor: pointer; transition: 0.2s; border-radius: 3px; }
     .trade-label:hover { background: rgba(255,255,255,0.05); }
@@ -63,15 +54,12 @@
     .pitch-box-top { position: absolute; top: 0; left: 50%; width: 300px; height: 100px; border: 2px solid white; border-top: none; transform: translateX(-50%); }
     .pitch-box-bottom { position: absolute; bottom: 0; left: 50%; width: 300px; height: 100px; border: 2px solid white; border-bottom: none; transform: translateX(-50%); }
 
-    .formation-slot { position: absolute; width: 95px; height: 140px; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.3); border: 1px dashed rgba(255, 255, 255, 0.4); border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .slot-label { color: rgba(255,255,255,0.5); font-weight: bold; position: absolute; z-index: 0; font-size: 1.5rem; }
-
-    .pos-st { top: 12%; left: 50%; } .pos-lw { top: 22%; left: 20%; } .pos-rw { top: 22%; left: 80%; }
-    .pos-cm-l { top: 40%; left: 35%; } .pos-cm-c { top: 50%; left: 50%; } .pos-cm-r { top: 40%; left: 65%; }
-    .pos-lb { top: 70%; left: 15%; } .pos-cb-l { top: 75%; left: 35%; } .pos-cb-r { top: 75%; left: 65%; } .pos-rb { top: 70%; left: 85%; }
-    .pos-gk { top: 86%; left: 50%; }
+    /* IMPORTANTE: transition adicionado para os jogadores se moverem com a troca de formação */
+    .formation-slot { position: absolute; width: 95px; height: 140px; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.3); border: 1px dashed rgba(255, 255, 255, 0.4); border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.5s ease-in-out; }
+    .slot-label { color: rgba(255,255,255,0.5); font-weight: bold; position: absolute; z-index: 0; font-size: 1.5rem; transition: 0.5s;}
 
     .player-card-mini { width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a1a, #2a2a2a); border: 2px solid var(--cyber-gold); border-radius: 5px; color: white; display: flex; flex-direction: column; padding: 5px; cursor: grab; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+    .player-card-mini:active { cursor: grabbing; box-shadow: 0 0 15px var(--cyber-gold); }
     .player-card-mini.locked { cursor: not-allowed; border-color: #555; opacity: 0.9;}
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
     .card-ovr { font-size: 1.3rem; font-weight: 900; color: var(--cyber-gold); line-height: 1; }
@@ -91,7 +79,7 @@
     {% if pending_received_trades or pending_sent_trades %}
     <div class="trade-alert-panel">
         <h4 style="color: var(--cyber-trade); font-weight: 900; margin-bottom: 15px;">
-            <i class="fa-solid fa-handshake me-2"></i>Café Presidente?: NEGOCIAÇÕES ATIVAS
+            <i class="fa-solid fa-handshake me-2"></i>TRADE CENTER: NEGOCIAÇÕES ATIVAS
         </h4>
 
         <div class="row">
@@ -161,9 +149,9 @@
         </h3>
     </div>
 
-    <div class="filter-panel">
-        <form method="GET" id="teamForm">
-            <select name="president_id" class="input-cyber" onchange="document.getElementById('teamForm').submit()" style="font-weight: bold; color: var(--cyber-gold);">
+    <div class="filter-panel d-flex justify-content-between align-items-center">
+        <form method="GET" id="teamForm" class="m-0">
+            <select name="president_id" class="input-cyber" onchange="document.getElementById('teamForm').submit()" style="font-weight: bold; color: var(--cyber-gold); width: auto;">
                 {% for pres in presidents %}
                     <option value="{{ pres.id }}" {% if pres.id == selected_president_id %}selected{% endif %}>
                         TIME: {{ pres.username|upper }}
@@ -171,6 +159,12 @@
                 {% endfor %}
             </select>
         </form>
+
+        {% if request.user.is_authenticated and request.user.id != selected_president_id %}
+        <button type="button" class="btn-trade" data-bs-toggle="modal" data-bs-target="#tradeModal" id="btnOpenTradeModal">
+            <i class="fa-solid fa-handshake me-2"></i>Propor Troca
+        </button>
+        {% endif %}
     </div>
 
     {% if request.user.is_superuser %}
@@ -207,48 +201,51 @@
     </div>
     {% endif %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 style="color: white; text-transform: uppercase; margin: 0; font-weight: 800; letter-spacing: 1px;">
-            <i class="fa-solid fa-chess-board me-2"></i>Squad Builder (4-3-3)
-        </h4>
-
-        <div class="d-flex gap-3">
-            {% if request.user.is_authenticated and request.user.id != selected_president_id %}
-            <button type="button" class="btn-trade" data-bs-toggle="modal" data-bs-target="#tradeModal" id="btnOpenTradeModal">
-                <i class="fa-solid fa-handshake me-2"></i>Propor Troca
-            </button>
-            {% endif %}
-
-            {% if request.user.id == selected_president_id or request.user.is_superuser %}
-            <button type="button" class="btn-save-lineup" onclick="document.getElementById('lineupForm').submit();">
-                <i class="fa-solid fa-floppy-disk me-2"></i>Salvar Escalação
-            </button>
-            {% else %}
-            <span class="badge bg-danger p-3" style="font-size: 1rem;"><i class="fa-solid fa-lock me-2"></i>Apenas Visualização</span>
-            {% endif %}
-        </div>
-    </div>
-
     <form method="POST" id="lineupForm">
         {% csrf_token %}
         <input type="hidden" name="action" value="save_lineup">
 
         <div class="filter-panel pt-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 style="color: white; text-transform: uppercase; margin: 0; font-weight: 800; letter-spacing: 1px;">
+                    <i class="fa-solid fa-chess-board me-2"></i>Squad Builder
+                </h4>
+
+                <div class="d-flex gap-2">
+                    {% if request.user.id == selected_president_id or request.user.is_superuser %}
+
+                    <select name="formation_select" class="input-cyber py-2" style="width: auto;" onchange="changeFormation(this.value)">
+                        <option value="4-3-3" {% if current_formation == '4-3-3' %}selected{% endif %}>4-3-3</option>
+                        <option value="4-4-2" {% if current_formation == '4-4-2' %}selected{% endif %}>4-4-2</option>
+                        <option value="4-2-3-1" {% if current_formation == '4-2-3-1' %}selected{% endif %}>4-2-3-1</option>
+                        <option value="3-5-2" {% if current_formation == '3-5-2' %}selected{% endif %}>3-5-2</option>
+                    </select>
+
+                    <button type="submit" class="btn-save-lineup" style="width: auto;">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>Salvar Escalação
+                    </button>
+                    {% else %}
+                    <span class="badge bg-danger p-2" style="font-size: 1rem;"><i class="fa-solid fa-lock me-2"></i>Apenas Visualização</span>
+                    {% endif %}
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-lg-8">
                     <div class="pitch-container">
                         <div class="pitch-line-center"></div><div class="pitch-circle"></div><div class="pitch-box-top"></div><div class="pitch-box-bottom"></div>
-                        <div class="formation-slot pos-st" id="pos-st" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">ST</span></div>
-                        <div class="formation-slot pos-lw" id="pos-lw" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">LW</span></div>
-                        <div class="formation-slot pos-rw" id="pos-rw" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">RW</span></div>
-                        <div class="formation-slot pos-cm-l" id="pos-cm-l" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
-                        <div class="formation-slot pos-cm-c" id="pos-cm-c" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
-                        <div class="formation-slot pos-cm-r" id="pos-cm-r" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
-                        <div class="formation-slot pos-lb" id="pos-lb" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">LB</span></div>
-                        <div class="formation-slot pos-cb-l" id="pos-cb-l" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CB</span></div>
-                        <div class="formation-slot pos-cb-r" id="pos-cb-r" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CB</span></div>
-                        <div class="formation-slot pos-rb" id="pos-rb" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">RB</span></div>
-                        <div class="formation-slot pos-gk" id="pos-gk" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">GK</span></div>
+
+                        <div class="formation-slot" id="slot-1" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-2" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-3" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-4" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-5" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-6" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-7" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-8" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-9" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-10" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
+                        <div class="formation-slot" id="slot-11" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label"></span></div>
                     </div>
                 </div>
 
@@ -276,6 +273,7 @@
                     </div>
 
                     <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+
                     <h6 style="color: #aaa; text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">Lista Completa do Elenco</h6>
                     <div style="max-height: 250px; overflow-y: auto;">
                         <table class="table-cyber" style="font-size: 0.8rem;">
@@ -287,12 +285,7 @@
                                     <td style="padding: 8px;">{{ pick.player.position }}</td>
                                     {% if request.user.is_superuser %}
                                     <td style="padding: 8px; text-align: right;">
-                                        <form method="POST" onsubmit="return confirm('Excluir pick?');" style="margin: 0;">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="action" value="delete_pick">
-                                            <input type="hidden" name="pick_id" value="{{ pick.id }}">
-                                            <button type="submit" class="btn-danger-cyber" style="font-size: 0.6rem; padding: 2px 5px;">X</button>
-                                        </form>
+                                        <button type="button" class="btn-danger-cyber" style="font-size: 0.6rem; padding: 2px 5px;" onclick="document.getElementById('form-delete-{{ pick.id }}').submit();">X</button>
                                     </td>
                                     {% endif %}
                                 </tr>
@@ -300,13 +293,21 @@
                             </tbody>
                         </table>
                     </div>
-                    </div>
+                </div>
             </div>
         </div>
     </form>
-</div>
 
-<input type="hidden" id="csrfToken" value="{{ csrf_token }}">
+    {% if request.user.is_superuser %}
+        {% for pick in selected_picks %}
+            <form method="POST" id="form-delete-{{ pick.id }}" onsubmit="return confirm('Excluir pick?');" style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_pick">
+                <input type="hidden" name="pick_id" value="{{ pick.id }}">
+            </form>
+        {% endfor %}
+    {% endif %}
+</div>
 
 <div class="modal fade" id="tradeModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -381,10 +382,63 @@
 
 {% block scripts %}
 <script>
+    // Dicionário com as Coordenadas de cada Formação
+    const formations = {
+        '4-3-3': [
+            { id: 'slot-1', label: 'ST', top: '12%', left: '50%' }, { id: 'slot-2', label: 'LW', top: '22%', left: '20%' }, { id: 'slot-3', label: 'RW', top: '22%', left: '80%' },
+            { id: 'slot-4', label: 'CM', top: '40%', left: '35%' }, { id: 'slot-5', label: 'CM', top: '50%', left: '50%' }, { id: 'slot-6', label: 'CM', top: '40%', left: '65%' },
+            { id: 'slot-7', label: 'LB', top: '70%', left: '15%' }, { id: 'slot-8', label: 'CB', top: '75%', left: '35%' }, { id: 'slot-9', label: 'CB', top: '75%', left: '65%' }, { id: 'slot-10', label: 'RB', top: '70%', left: '85%' },
+            { id: 'slot-11', label: 'GK', top: '86%', left: '50%' }
+        ],
+        '4-4-2': [
+            { id: 'slot-1', label: 'LS', top: '12%', left: '35%' }, { id: 'slot-2', label: 'RS', top: '12%', left: '65%' },
+            { id: 'slot-3', label: 'LM', top: '45%', left: '15%' }, { id: 'slot-4', label: 'CM', top: '45%', left: '35%' }, { id: 'slot-5', label: 'CM', top: '45%', left: '65%' }, { id: 'slot-6', label: 'RM', top: '45%', left: '85%' },
+            { id: 'slot-7', label: 'LB', top: '70%', left: '15%' }, { id: 'slot-8', label: 'CB', top: '75%', left: '35%' }, { id: 'slot-9', label: 'CB', top: '75%', left: '65%' }, { id: 'slot-10', label: 'RB', top: '70%', left: '85%' },
+            { id: 'slot-11', label: 'GK', top: '86%', left: '50%' }
+        ],
+        '4-2-3-1': [
+            { id: 'slot-1', label: 'ST', top: '12%', left: '50%' },
+            { id: 'slot-2', label: 'LAM', top: '28%', left: '20%' }, { id: 'slot-3', label: 'CAM', top: '28%', left: '50%' }, { id: 'slot-4', label: 'RAM', top: '28%', left: '80%' },
+            { id: 'slot-5', label: 'CDM', top: '50%', left: '35%' }, { id: 'slot-6', label: 'CDM', top: '50%', left: '65%' },
+            { id: 'slot-7', label: 'LB', top: '70%', left: '15%' }, { id: 'slot-8', label: 'CB', top: '75%', left: '35%' }, { id: 'slot-9', label: 'CB', top: '75%', left: '65%' }, { id: 'slot-10', label: 'RB', top: '70%', left: '85%' },
+            { id: 'slot-11', label: 'GK', top: '86%', left: '50%' }
+        ],
+        '3-5-2': [
+            { id: 'slot-1', label: 'LS', top: '12%', left: '35%' }, { id: 'slot-2', label: 'RS', top: '12%', left: '65%' },
+            { id: 'slot-3', label: 'LM', top: '40%', left: '15%' }, { id: 'slot-4', label: 'CDM', top: '55%', left: '35%' }, { id: 'slot-5', label: 'CAM', top: '35%', left: '50%' }, { id: 'slot-6', label: 'CDM', top: '55%', left: '65%' }, { id: 'slot-7', label: 'RM', top: '40%', left: '85%' },
+            { id: 'slot-8', label: 'CB', top: '75%', left: '20%' }, { id: 'slot-9', label: 'CB', top: '75%', left: '50%' }, { id: 'slot-10', label: 'CB', top: '75%', left: '80%' },
+            { id: 'slot-11', label: 'GK', top: '86%', left: '50%' }
+        ]
+    };
+
+    // Mapeia posições antigas do banco para os novos IDs (Para ninguém perder o time)
+    const legacyMap = {
+        'pos-st': 'slot-1', 'pos-lw': 'slot-2', 'pos-rw': 'slot-3', 'pos-cm-l': 'slot-4', 'pos-cm-c': 'slot-5',
+        'pos-cm-r': 'slot-6', 'pos-lb': 'slot-7', 'pos-cb-l': 'slot-8', 'pos-cb-r': 'slot-9', 'pos-rb': 'slot-10', 'pos-gk': 'slot-11'
+    };
+
+    function changeFormation(formationKey) {
+        const config = formations[formationKey];
+        if(!config) return;
+        config.forEach(pos => {
+            const slot = document.getElementById(pos.id);
+            if(slot) {
+                slot.style.top = pos.top;
+                slot.style.left = pos.left;
+                slot.querySelector('.slot-label').innerText = pos.label;
+            }
+        });
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
+        // Carrega a Formação do Servidor
+        const currentFormation = "{{ current_formation|default:'4-3-3' }}";
+        changeFormation(currentFormation);
+
         // Posicionamento do Squad Builder
         document.querySelectorAll('.player-card-mini').forEach(card => {
-            const savedSlot = card.getAttribute('data-slot');
+            let savedSlot = card.getAttribute('data-slot');
+            if (legacyMap[savedSlot]) { savedSlot = legacyMap[savedSlot]; } // Converte o modelo antigo
             if (savedSlot && savedSlot !== 'bench' && savedSlot !== 'None') {
                 const slotEl = document.getElementById(savedSlot);
                 if (slotEl) slotEl.appendChild(card);
@@ -392,7 +446,6 @@
         });
 
         // MÁGICA DO BOTÃO CONTRAPROPOR
-        // Se a URL tiver ?open_trade=true, ele clica sozinho no botão de abrir o modal
         const urlParams = new URLSearchParams(window.location.search);
         if(urlParams.get('open_trade') === 'true') {
             const tradeModalBtn = document.getElementById('btnOpenTradeModal');
@@ -400,6 +453,34 @@
                 tradeModalBtn.click();
             }
         }
+
+        // Script da Live Search do Admin (Restaurado e Blindado)
+        {% if request.user.is_superuser %}
+        const adminSearchInput = document.getElementById('adminLiveSearch');
+        const adminTableBody = document.getElementById('adminPlayerTableBody');
+        const presidentSelect = document.querySelector('select[name="president_id"]');
+        let typingTimer;
+
+        if (adminSearchInput) {
+            adminSearchInput.addEventListener('keyup', function() {
+                clearTimeout(typingTimer);
+                const query = adminSearchInput.value;
+                const presidentId = presidentSelect.value;
+
+                typingTimer = setTimeout(function() {
+                    adminTableBody.innerHTML = '<tr><td colspan="2" class="text-center py-4" style="color: var(--cyber-gold); font-family: monospace;"><i class="fa-solid fa-circle-notch fa-spin me-2"></i>VARRENDO...</td></tr>';
+                    fetch(`?president_id=${presidentId}&q=${encodeURIComponent(query)}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newTableBody = doc.getElementById('adminPlayerTableBody');
+                            if(newTableBody) adminTableBody.innerHTML = newTableBody.innerHTML;
+                        });
+                }, 300);
+            });
+        }
+        {% endif %}
     });
 
     // Lógica Drag and Drop

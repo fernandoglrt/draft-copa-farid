@@ -35,7 +35,7 @@ class DraftOrder(models.Model):
     draft = models.ForeignKey(Draft, on_delete=models.CASCADE)
     president = models.ForeignKey(User, on_delete=models.CASCADE)
     pick_order = models.IntegerField()  # 1 a 13
-
+    formation = models.CharField(max_length=15, default='4-3-3')
     class Meta:
         ordering = ['pick_order']
 

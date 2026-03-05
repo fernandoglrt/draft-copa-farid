@@ -145,6 +145,10 @@ def teams_view(request, draft_id):
     elif selected_president_id:
         selected_president_id = int(selected_president_id)
 
+
+        # 1. ADICIONE ISTO AQUI PARA DESCOBRIR A FORMAÇÃO ATUAL:
+    selected_order = DraftOrder.objects.filter(draft=draft, president_id=selected_president_id).first()
+    current_formation = selected_order.formation if selected_order else '4-3-3'
     # ==========================================================
     # SISTEMA DE TROCAS (TRADE CENTER) E ADMIN
     # ==========================================================
@@ -206,6 +210,13 @@ def teams_view(request, draft_id):
 
         # 5. Salvar Escalação (Fallback sem AJAX)
         elif action == 'save_lineup':
+            # 2. ADICIONE AS 5 LINHAS ABAIXO PARA SALVAR A FORMAÇÃO NOVA:
+            new_formation = request.POST.get('formation_select')
+            if new_formation and selected_order:
+                if request.user.id == selected_president_id or request.user.is_superuser:
+                    selected_order.formation = new_formation
+                    selected_order.save()
+
             for key, value in request.POST.items():
                 if key.startswith('pick_'):
                     pick_id = key.split('_')[1]
@@ -260,6 +271,7 @@ def teams_view(request, draft_id):
         'draft': draft,
         'presidents': presidents_in_draft,
         'selected_president_id': selected_president_id,
+        'current_formation': current_formation,  # <-- ADICIONAR AQUI
         'selected_picks': selected_picks,
         'my_picks': my_picks,
         'pending_received_trades': pending_received_trades,
