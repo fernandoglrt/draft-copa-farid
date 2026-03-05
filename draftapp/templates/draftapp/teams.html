@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    /* ==========================================
+       TEMA TEAMS (CYBERPUNK)
+       ========================================== */
+    :root {
+        --cyber-gold: #FFD700;
+        --cyber-dark: #0a0e14;
+        --cyber-border: rgba(255, 215, 0, 0.3);
+        --cyber-bg-panel: rgba(15, 32, 39, 0.85);
+        --cyber-danger: #ff003c;
+    }
+
+    /* Painéis */
+    .filter-panel {
+        background: var(--cyber-bg-panel);
+        border: 1px solid var(--cyber-border);
+        border-radius: 4px;
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* Inputs e Selects */
+    .input-cyber {
+        background: rgba(0,0,0,0.5);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: white;
+        padding: 12px;
+        width: 100%;
+        border-radius: 2px;
+        font-size: 1.1rem;
+        transition: 0.3s;
+    }
+    .input-cyber:focus {
+        border-color: var(--cyber-gold);
+        outline: none;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+    }
+
+    /* Botões */
+    .btn-cyber-outline {
+        background: transparent;
+        border: 1px solid var(--cyber-gold);
+        color: var(--cyber-gold);
+        padding: 8px 15px;
+        font-weight: bold;
+        text-transform: uppercase;
+        transition: 0.3s;
+        cursor: pointer;
+        border-radius: 2px;
+    }
+    .btn-cyber-outline:hover { background: var(--cyber-gold); color: #000; }
+
+    .btn-danger-cyber {
+        background: transparent;
+        border: 1px solid var(--cyber-danger);
+        color: var(--cyber-danger);
+        padding: 6px 12px;
+        text-transform: uppercase;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 2px;
+    }
+    .btn-danger-cyber:hover { background: var(--cyber-danger); color: white; box-shadow: 0 0 10px var(--cyber-danger); }
+
+    /* Tabela */
+    .table-cyber { width: 100%; border-collapse: separate; border-spacing: 0 8px; color: white; }
+    .table-cyber thead th { background: rgba(0,0,0,0.8); color: var(--cyber-gold); border: none; font-size: 0.9rem; padding: 15px; text-transform: uppercase; }
+    .table-cyber tbody tr { background: rgba(255,255,255,0.03); transition: 0.2s; }
+    .table-cyber tbody tr:hover { background: rgba(255, 215, 0, 0.05); transform: scale(1.01); }
+    .table-cyber tbody td { border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 12px 15px; vertical-align: middle; }
+    .table-cyber tbody td:first-child { border-left: 3px solid var(--cyber-gold); }
+    .table-cyber tbody td:last-child { border-right: 1px solid rgba(255,255,255,0.05); }
+</style>
+
+<div class="animate__animated animate__fadeInDown">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold text-warning text-uppercase m-0" style="letter-spacing: 2px;">
+            <i class="fa-solid fa-users me-2"></i>ELENCOS FORMADOS
+        </h3>
+    </div>
+
+    <div class="filter-panel">
+        <label style="color: var(--cyber-gold); font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block;">
+            <i class="fa-solid fa-filter me-2"></i>Filtrar por Presidente
+        </label>
+        <form method="GET" id="teamForm">
+            <select name="president_id" class="input-cyber" onchange="document.getElementById('teamForm').submit()" style="font-weight: bold; color: var(--cyber-gold);">
+                {% for pres in presidents %}
+                    <option value="{{ pres.id }}" {% if pres.id == selected_president_id %}selected{% endif %}>
+                        TIME: {{ pres.username|upper }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if request.user.is_superuser %}
+    <div class="filter-panel" style="border-color: var(--cyber-danger); background: rgba(255, 0, 60, 0.05);">
+        <h5 style="color: var(--cyber-danger); font-weight: bold; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">
+            <i class="fa-solid fa-user-shield me-2"></i>Zona Admin: Adicionar Pick Forçado
+        </h5>
+
+        <input type="text" id="adminLiveSearch" class="input-cyber mb-3" placeholder="Pesquisar jogador na base global (ex: Ronaldinho)..." autocomplete="off" value="{{ search_query|default_if_none:'' }}">
+
+        <div style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);">
+            <table style="width: 100%; border-collapse: collapse; color: white;">
+                <tbody id="adminPlayerTableBody">
+                    {% for player in available_players %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 12px;">
+                            <strong style="font-size: 1.1rem; letter-spacing: 1px;">{{ player.name }}</strong>
+                            <span style="color: var(--cyber-gold); font-weight: bold; margin-left: 10px;">OVR: {{ player.overall }}</span>
+                            <span class="badge bg-secondary ms-2" style="border-radius: 2px;">{{ player.position }}</span>
+                        </td>
+                        <td style="padding: 12px; text-align: right;">
+                            <form method="POST" style="margin: 0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="add_pick">
+                                <input type="hidden" name="player_id" value="{{ player.id }}">
+                                <button type="submit" class="btn-cyber-outline" style="font-size: 0.85rem; padding: 5px 15px; border-color: var(--cyber-gold); color: var(--cyber-gold);">+ ADICIONAR</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" style="color: #666; padding: 20px; text-align: center; font-family: monospace;">
+                            NENHUM SINAL DETECTADO. DIGITE O NOME ACIMA.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="filter-panel">
+        <h4 style="color: white; text-transform: uppercase; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px;">
+            <i class="fa-solid fa-clipboard-list me-2"></i>Jogadores Escolhidos
+        </h4>
+        <div class="table-responsive">
+            <table class="table-cyber">
+                <thead>
+                    <tr>
+                        <th>Pick #</th>
+                        <th>Jogador</th>
+                        <th class="text-warning text-center">OVR</th>
+                        <th class="text-center">Pos</th>
+                        {% if request.user.is_superuser %}
+                        <th class="text-center" style="color: var(--cyber-danger);">Ação Admin</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pick in selected_picks %}
+                    <tr>
+                        <td style="color: #888; font-weight: bold; font-family: monospace; font-size: 1.1rem;">{{ pick.pick_number }}</td>
+                        <td style="font-size: 1.2rem; font-weight: bold; letter-spacing: 1px;">{{ pick.player.name }}</td>
+                        <td class="text-center text-warning fw-bold fs-5">{{ pick.player.overall }}</td>
+                        <td class="text-center"><span class="badge bg-secondary" style="border-radius: 2px; font-size: 0.9rem;">{{ pick.player.position }}</span></td>
+
+                        {% if request.user.is_superuser %}
+                        <td class="text-center">
+                            <form method="POST" onsubmit="return confirm('Tem certeza que deseja remover este jogador do time? O número do pick geral será ajustado automaticamente.');" style="margin: 0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_pick">
+                                <input type="hidden" name="pick_id" value="{{ pick.id }}">
+                                <button type="submit" class="btn-danger-cyber"><i class="fa-solid fa-trash me-2"></i>Excluir</button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5" style="color: #666; font-family: monospace;">
+                            <i class="fa-solid fa-ghost fs-1 mb-3"></i><br>
+                            ELENCO VAZIO. NENHUM JOGADOR DRAFTADO AINDA.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if request.user.is_superuser %}
+<script>
+    // Mágica da Busca AJAX do Admin
+    document.addEventListener("DOMContentLoaded", function() {
+        const adminSearchInput = document.getElementById('adminLiveSearch');
+        const adminTableBody = document.getElementById('adminPlayerTableBody');
+        const presidentSelect = document.querySelector('select[name="president_id"]');
+        let typingTimer;
+        const doneTypingInterval = 300; // 300ms
+
+        if (adminSearchInput) {
+            adminSearchInput.addEventListener('keyup', function() {
+                clearTimeout(typingTimer);
+                const query = adminSearchInput.value;
+                const presidentId = presidentSelect.value;
+
+                typingTimer = setTimeout(function() {
+                    adminTableBody.innerHTML = '<tr><td colspan="2" class="text-center py-4" style="color: var(--cyber-gold); font-family: monospace; letter-spacing: 1px;"><i class="fa-solid fa-circle-notch fa-spin me-2"></i>VARRENDO BANCO DE DADOS...</td></tr>';
+
+                    fetch(`?president_id=${presidentId}&q=${encodeURIComponent(query)}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newTableBody = doc.getElementById('adminPlayerTableBody');
+
+                            if(newTableBody) {
+                                adminTableBody.innerHTML = newTableBody.innerHTML;
+                            }
+                        })
+                        .catch(error => console.error('Falha de conexão no radar:', error));
+                }, doneTypingInterval);
+            });
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

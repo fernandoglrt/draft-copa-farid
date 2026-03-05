@@ -101,20 +101,53 @@
             70% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(255, 50, 50, 0); }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 50, 50, 0); }
         }
+
+        /* ESTILOS DOS BOTÕES DA NAVBAR GLOBAL */
+        .nav-btn-global {
+            color: #f8f9fa;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: 0.3s;
+        }
+        .nav-btn-global:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .nav-btn-global.active {
+            background: linear-gradient(45deg, var(--gold-primary), var(--gold-secondary));
+            color: #1a1a1a !important;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(246, 211, 101, 0.4);
+        }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-dark mb-4 pt-4 animate__animated animate__fadeInDown">
-    <div class="container d-flex justify-content-between align-items-center">
-        <span class="navbar-brand"><i class="fa-solid fa-trophy me-2 text-warning"></i>COPA FARID</span>
-        <a href="{% url 'scout_players' draft.id %}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold">
-            <i class="fa-solid fa-magnifying-glass me-2"></i>Scout Center
-        </a>
+<nav class="navbar navbar-dark mb-4 pt-4 animate__animated animate__fadeInDown border-bottom border-secondary pb-3">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <span class="navbar-brand m-0"><i class="fa-solid fa-trophy me-2 text-warning"></i>COPA FARID</span>
+
+        {% if draft %}
+        <div class="d-flex gap-2">
+            <a href="{% url 'draft_room' draft.id %}"
+               class="btn rounded-pill px-4 py-2 fw-bold nav-btn-global {% if request.resolver_match.url_name == 'draft_room' %}active{% endif %}">
+                <i class="fa-solid fa-satellite-dish me-2"></i>Draft Room
+            </a>
+
+            <a href="{% url 'scout_players' draft.id %}"
+               class="btn rounded-pill px-4 py-2 fw-bold nav-btn-global {% if request.resolver_match.url_name == 'scout_players' %}active{% endif %}">
+                <i class="fa-solid fa-magnifying-glass me-2"></i>Scout Center
+            </a>
+
+            <a href="{% url 'teams_view' draft.id %}"
+               class="btn rounded-pill px-4 py-2 fw-bold nav-btn-global {% if request.resolver_match.url_name == 'teams_view' %}active{% endif %}">
+                <i class="fa-solid fa-users me-2"></i>Ver Times
+            </a>
+        </div>
+        {% endif %}
     </div>
 </nav>
 
-<div class="container">
+<div class="container-fluid px-4">
     {% block content %}{% endblock %}
 </div>
 

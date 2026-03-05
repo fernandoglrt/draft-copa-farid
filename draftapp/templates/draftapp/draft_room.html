@@ -109,14 +109,25 @@
         <h2 class="fw-bold text-warning text-uppercase m-0" style="letter-spacing: 2px;">
             <i class="fa-solid fa-satellite-dish me-2"></i>SALA DE DRAFT
         </h2>
+
         {% if request.user.is_superuser %}
-        <form method="POST" onsubmit="return confirm('ALERTA MÁXIMO: Isso apagará todas as escolhas. Continuar?');" class="m-0">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="reset">
-            <button type="submit" class="btn-cyber-outline btn-danger-cyber py-2">
-                <i class="fa-solid fa-triangle-exclamation me-2"></i>RESETAR DRAFT
-            </button>
-        </form>
+        <div class="d-flex gap-2">
+            <form method="POST" onsubmit="return confirm('Tem certeza que deseja PULAR a vez do {{ current_president.username }}? O relógio vai avançar sem registrar um jogador.');" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="skip">
+                <button type="submit" class="btn-cyber-outline py-2" style="border-color: #ff8c00; color: #ff8c00;">
+                    <i class="fa-solid fa-forward-step me-2"></i>PULAR VEZ
+                </button>
+            </form>
+
+            <form method="POST" onsubmit="return confirm('ALERTA MÁXIMO: Isso apagará todas as escolhas. Continuar?');" class="m-0">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reset">
+                <button type="submit" class="btn-cyber-outline btn-danger-cyber py-2">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>RESETAR DRAFT
+                </button>
+            </form>
+        </div>
         {% endif %}
     </div>
 
