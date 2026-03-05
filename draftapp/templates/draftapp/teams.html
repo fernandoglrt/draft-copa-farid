@@ -12,62 +12,14 @@
         --cyber-danger: #ff003c;
     }
 
-    /* Painéis */
-    .filter-panel {
-        background: var(--cyber-bg-panel);
-        border: 1px solid var(--cyber-border);
-        border-radius: 4px;
-        backdrop-filter: blur(10px);
-        padding: 20px;
-        margin-bottom: 25px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    /* Inputs e Selects */
-    .input-cyber {
-        background: rgba(0,0,0,0.5);
-        border: 1px solid rgba(255,255,255,0.1);
-        color: white;
-        padding: 12px;
-        width: 100%;
-        border-radius: 2px;
-        font-size: 1.1rem;
-        transition: 0.3s;
-    }
-    .input-cyber:focus {
-        border-color: var(--cyber-gold);
-        outline: none;
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
-    }
-
-    /* Botões */
-    .btn-cyber-outline {
-        background: transparent;
-        border: 1px solid var(--cyber-gold);
-        color: var(--cyber-gold);
-        padding: 8px 15px;
-        font-weight: bold;
-        text-transform: uppercase;
-        transition: 0.3s;
-        cursor: pointer;
-        border-radius: 2px;
-    }
+    .filter-panel { background: var(--cyber-bg-panel); border: 1px solid var(--cyber-border); border-radius: 4px; backdrop-filter: blur(10px); padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .input-cyber { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; width: 100%; border-radius: 2px; font-size: 1.1rem; transition: 0.3s; }
+    .input-cyber:focus { border-color: var(--cyber-gold); outline: none; box-shadow: 0 0 15px rgba(255, 215, 0, 0.1); }
+    .btn-cyber-outline { background: transparent; border: 1px solid var(--cyber-gold); color: var(--cyber-gold); padding: 8px 15px; font-weight: bold; text-transform: uppercase; transition: 0.3s; cursor: pointer; border-radius: 2px; }
     .btn-cyber-outline:hover { background: var(--cyber-gold); color: #000; }
-
-    .btn-danger-cyber {
-        background: transparent;
-        border: 1px solid var(--cyber-danger);
-        color: var(--cyber-danger);
-        padding: 6px 12px;
-        text-transform: uppercase;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-        border-radius: 2px;
-    }
+    .btn-danger-cyber { background: transparent; border: 1px solid var(--cyber-danger); color: var(--cyber-danger); padding: 6px 12px; text-transform: uppercase; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 2px; }
     .btn-danger-cyber:hover { background: var(--cyber-danger); color: white; box-shadow: 0 0 10px var(--cyber-danger); }
 
-    /* Tabela */
     .table-cyber { width: 100%; border-collapse: separate; border-spacing: 0 8px; color: white; }
     .table-cyber thead th { background: rgba(0,0,0,0.8); color: var(--cyber-gold); border: none; font-size: 0.9rem; padding: 15px; text-transform: uppercase; }
     .table-cyber tbody tr { background: rgba(255,255,255,0.03); transition: 0.2s; }
@@ -75,6 +27,102 @@
     .table-cyber tbody td { border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 12px 15px; vertical-align: middle; }
     .table-cyber tbody td:first-child { border-left: 3px solid var(--cyber-gold); }
     .table-cyber tbody td:last-child { border-right: 1px solid rgba(255,255,255,0.05); }
+
+    /* ==========================================
+       CAMPO DE FUTEBOL E CARDS (SQUAD BUILDER)
+       ========================================== */
+    .pitch-container {
+        position: relative;
+        width: 100%;
+        height: 680px; /* Aumentei um pouco a altura para caber os cards maiores */
+        background: repeating-linear-gradient(0deg, #1b4d24, #1b4d24 10%, #1e5528 10%, #1e5528 20%);
+        border: 4px solid white;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    /* Linhas do Campo */
+    .pitch-line-center { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: white; transform: translateY(-50%); }
+    .pitch-circle { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); }
+    .pitch-box-top { position: absolute; top: 0; left: 50%; width: 300px; height: 100px; border: 2px solid white; border-top: none; transform: translateX(-50%); }
+    .pitch-box-bottom { position: absolute; bottom: 0; left: 50%; width: 300px; height: 100px; border: 2px solid white; border-bottom: none; transform: translateX(-50%); }
+
+    /* Slots de Posição no Campo - AUMENTADOS PARA CABER OS STATUS */
+    .formation-slot {
+        position: absolute;
+        width: 95px;
+        height: 140px;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px dashed rgba(255, 255, 255, 0.4);
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .slot-label { color: rgba(255,255,255,0.5); font-weight: bold; position: absolute; z-index: 0; font-size: 1.5rem; }
+
+    /* Posições Táticas (Padrão 4-3-3) */
+    .pos-st { top: 12%; left: 50%; }
+    .pos-lw { top: 22%; left: 20%; }
+    .pos-rw { top: 22%; left: 80%; }
+    .pos-cm-l { top: 40%; left: 35%; }
+    .pos-cm-c { top: 50%; left: 50%; }
+    .pos-cm-r { top: 40%; left: 65%; }
+    .pos-lb { top: 70%; left: 15%; }
+    .pos-cb-l { top: 75%; left: 35%; }
+    .pos-cb-r { top: 75%; left: 65%; }
+    .pos-rb { top: 70%; left: 85%; }
+    .pos-gk { top: 86%; left: 50%; }
+
+    /* Card Estilo FUT */
+    .player-card-mini {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+        border: 2px solid var(--cyber-gold);
+        border-radius: 5px;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        cursor: grab;
+        z-index: 2;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    }
+    .player-card-mini:active { cursor: grabbing; box-shadow: 0 0 15px var(--cyber-gold); }
+
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .card-ovr { font-size: 1.3rem; font-weight: 900; color: var(--cyber-gold); line-height: 1; }
+    .card-pos { font-size: 0.8rem; font-weight: bold; color: #ccc; }
+    .card-name { font-size: 0.75rem; font-weight: bold; text-align: center; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 4px 0; }
+
+    /* Grid de Status do Jogador (PAC, SHO, etc) */
+    .card-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px 6px;
+        font-size: 0.65rem;
+        border-top: 1px solid rgba(255, 215, 0, 0.3);
+        padding-top: 5px;
+        margin-top: auto;
+    }
+    .stat-row { display: flex; justify-content: space-between; }
+    .stat-val { font-weight: 900; color: white; }
+    .stat-name { color: #888; font-weight: bold; }
+
+    .bench-container {
+        background: rgba(0,0,0,0.5);
+        border: 1px solid var(--cyber-border);
+        min-height: 160px;
+        padding: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .bench-container .player-card-mini { width: 95px; height: 140px; }
 </style>
 
 <div class="animate__animated animate__fadeInDown">
@@ -86,9 +134,6 @@
     </div>
 
     <div class="filter-panel">
-        <label style="color: var(--cyber-gold); font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block;">
-            <i class="fa-solid fa-filter me-2"></i>Filtrar por Presidente
-        </label>
         <form method="GET" id="teamForm">
             <select name="president_id" class="input-cyber" onchange="document.getElementById('teamForm').submit()" style="font-weight: bold; color: var(--cyber-gold);">
                 {% for pres in presidents %}
@@ -105,9 +150,7 @@
         <h5 style="color: var(--cyber-danger); font-weight: bold; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">
             <i class="fa-solid fa-user-shield me-2"></i>Zona Admin: Adicionar Pick Forçado
         </h5>
-
         <input type="text" id="adminLiveSearch" class="input-cyber mb-3" placeholder="Pesquisar jogador na base global (ex: Ronaldinho)..." autocomplete="off" value="{{ search_query|default_if_none:'' }}">
-
         <div style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);">
             <table style="width: 100%; border-collapse: collapse; color: white;">
                 <tbody id="adminPlayerTableBody">
@@ -123,16 +166,12 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="add_pick">
                                 <input type="hidden" name="player_id" value="{{ player.id }}">
-                                <button type="submit" class="btn-cyber-outline" style="font-size: 0.85rem; padding: 5px 15px; border-color: var(--cyber-gold); color: var(--cyber-gold);">+ ADICIONAR</button>
+                                <button type="submit" class="btn-cyber-outline" style="font-size: 0.85rem; padding: 5px 15px;">+ ADICIONAR</button>
                             </form>
                         </td>
                     </tr>
                     {% empty %}
-                    <tr>
-                        <td colspan="2" style="color: #666; padding: 20px; text-align: center; font-family: monospace;">
-                            NENHUM SINAL DETECTADO. DIGITE O NOME ACIMA.
-                        </td>
-                    </tr>
+                    <tr><td colspan="2" class="text-center py-4" style="color: #666;">NENHUM SINAL DETECTADO.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -142,66 +181,143 @@
 
     <div class="filter-panel">
         <h4 style="color: white; text-transform: uppercase; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px;">
-            <i class="fa-solid fa-clipboard-list me-2"></i>Jogadores Escolhidos
+            <i class="fa-solid fa-chess-board me-2"></i>Squad Builder (4-3-3)
         </h4>
-        <div class="table-responsive">
-            <table class="table-cyber">
-                <thead>
-                    <tr>
-                        <th>Pick #</th>
-                        <th>Jogador</th>
-                        <th class="text-warning text-center">OVR</th>
-                        <th class="text-center">Pos</th>
-                        {% if request.user.is_superuser %}
-                        <th class="text-center" style="color: var(--cyber-danger);">Ação Admin</th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for pick in selected_picks %}
-                    <tr>
-                        <td style="color: #888; font-weight: bold; font-family: monospace; font-size: 1.1rem;">{{ pick.pick_number }}</td>
-                        <td style="font-size: 1.2rem; font-weight: bold; letter-spacing: 1px;">{{ pick.player.name }}</td>
-                        <td class="text-center text-warning fw-bold fs-5">{{ pick.player.overall }}</td>
-                        <td class="text-center"><span class="badge bg-secondary" style="border-radius: 2px; font-size: 0.9rem;">{{ pick.player.position }}</span></td>
 
-                        {% if request.user.is_superuser %}
-                        <td class="text-center">
-                            <form method="POST" onsubmit="return confirm('Tem certeza que deseja remover este jogador do time? O número do pick geral será ajustado automaticamente.');" style="margin: 0;">
-                                {% csrf_token %}
-                                <input type="hidden" name="action" value="delete_pick">
-                                <input type="hidden" name="pick_id" value="{{ pick.id }}">
-                                <button type="submit" class="btn-danger-cyber"><i class="fa-solid fa-trash me-2"></i>Excluir</button>
-                            </form>
-                        </td>
-                        {% endif %}
-                    </tr>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="pitch-container">
+                    <div class="pitch-line-center"></div>
+                    <div class="pitch-circle"></div>
+                    <div class="pitch-box-top"></div>
+                    <div class="pitch-box-bottom"></div>
+
+                    <div class="formation-slot pos-st" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">ST</span></div>
+                    <div class="formation-slot pos-lw" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">LW</span></div>
+                    <div class="formation-slot pos-rw" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">RW</span></div>
+
+                    <div class="formation-slot pos-cm-l" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
+                    <div class="formation-slot pos-cm-c" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
+                    <div class="formation-slot pos-cm-r" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
+
+                    <div class="formation-slot pos-lb" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">LB</span></div>
+                    <div class="formation-slot pos-cb-l" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CB</span></div>
+                    <div class="formation-slot pos-cb-r" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CB</span></div>
+                    <div class="formation-slot pos-rb" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">RB</span></div>
+
+                    <div class="formation-slot pos-gk" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">GK</span></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <h6 style="color: var(--cyber-gold); text-transform: uppercase; font-weight: bold;">Banco / Não Relacionados</h6>
+                <p style="font-size: 0.8rem; color: #888;">Arraste os cards para o campo para montar o time.</p>
+
+                <div class="bench-container" id="bench" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    {% for pick in selected_picks %}
+                    <div class="player-card-mini" id="card-{{ pick.id }}" draggable="true" ondragstart="drag(event)">
+                        <div class="card-top">
+                            <span class="card-ovr">{{ pick.player.overall }}</span>
+                            <span class="card-pos">{{ pick.player.position }}</span>
+                        </div>
+                        <div class="card-name" title="{{ pick.player.name }}">{{ pick.player.name }}</div>
+
+                        <div class="card-stats">
+                            <div class="stat-row"><span class="stat-val">{{ pick.player.pace }}</span><span class="stat-name">PAC</span></div>
+                            <div class="stat-row"><span class="stat-val">{{ pick.player.dribbling }}</span><span class="stat-name">DRI</span></div>
+                            <div class="stat-row"><span class="stat-val">{{ pick.player.shooting }}</span><span class="stat-name">SHO</span></div>
+                            <div class="stat-row"><span class="stat-val">{{ pick.player.defending }}</span><span class="stat-name">DEF</span></div>
+                            <div class="stat-row"><span class="stat-val">{{ pick.player.passing }}</span><span class="stat-name">PAS</span></div>
+                            <div class="stat-row"><span class="stat-val">{{ pick.player.physical }}</span><span class="stat-name">PHY</span></div>
+                        </div>
+
+                    </div>
                     {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-5" style="color: #666; font-family: monospace;">
-                            <i class="fa-solid fa-ghost fs-1 mb-3"></i><br>
-                            ELENCO VAZIO. NENHUM JOGADOR DRAFTADO AINDA.
-                        </td>
-                    </tr>
+                    <span style="color: #666; font-style: italic;">Nenhum jogador draftado ainda.</span>
                     {% endfor %}
-                </tbody>
-            </table>
+                </div>
+
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+
+                <h6 style="color: #aaa; text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">Lista Completa</h6>
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table class="table-cyber" style="font-size: 0.8rem;">
+                        <tbody>
+                            {% for pick in selected_picks %}
+                            <tr>
+                                <td style="padding: 8px;"><strong>{{ pick.player.name }}</strong></td>
+                                <td style="padding: 8px; color: var(--cyber-gold);">{{ pick.player.overall }}</td>
+                                <td style="padding: 8px;">{{ pick.player.position }}</td>
+                                {% if request.user.is_superuser %}
+                                <td style="padding: 8px; text-align: right;">
+                                    <form method="POST" onsubmit="return confirm('Excluir pick?');" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete_pick">
+                                        <input type="hidden" name="pick_id" value="{{ pick.id }}">
+                                        <button type="submit" class="btn-danger-cyber" style="font-size: 0.6rem; padding: 2px 5px;">X</button>
+                                    </form>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 {% endblock %}
 
 {% block scripts %}
-{% if request.user.is_superuser %}
 <script>
-    // Mágica da Busca AJAX do Admin
+    /* ==========================================
+       LÓGICA DE DRAG AND DROP (SQUAD BUILDER)
+       ========================================== */
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.currentTarget.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+
+        var dropTarget = ev.target;
+
+        if (dropTarget.classList.contains('slot-label') || dropTarget.classList.contains('card-stats') || dropTarget.closest('.player-card-mini')) {
+            // Se soltar em cima do label ou de outro card, tentamos achar o slot pai
+            dropTarget = dropTarget.closest('.formation-slot');
+        }
+
+        if (dropTarget && dropTarget.classList.contains('formation-slot')) {
+            const cardsInSlot = dropTarget.querySelectorAll('.player-card-mini');
+            if (cardsInSlot.length > 0) {
+                // Se já tiver card, joga ele de volta pro banco antes de botar o novo
+                const bench = document.getElementById('bench');
+                bench.appendChild(cardsInSlot[0]);
+            }
+            dropTarget.appendChild(draggedElement);
+        }
+        else if (ev.target.id === 'bench' || ev.target.closest('.bench-container')) {
+            const bench = document.getElementById('bench');
+            bench.appendChild(draggedElement);
+        }
+    }
+
+    /* ==========================================
+       BUSCA ADMIN
+       ========================================== */
+    {% if request.user.is_superuser %}
     document.addEventListener("DOMContentLoaded", function() {
         const adminSearchInput = document.getElementById('adminLiveSearch');
         const adminTableBody = document.getElementById('adminPlayerTableBody');
         const presidentSelect = document.querySelector('select[name="president_id"]');
         let typingTimer;
-        const doneTypingInterval = 300; // 300ms
 
         if (adminSearchInput) {
             adminSearchInput.addEventListener('keyup', function() {
@@ -210,7 +326,7 @@
                 const presidentId = presidentSelect.value;
 
                 typingTimer = setTimeout(function() {
-                    adminTableBody.innerHTML = '<tr><td colspan="2" class="text-center py-4" style="color: var(--cyber-gold); font-family: monospace; letter-spacing: 1px;"><i class="fa-solid fa-circle-notch fa-spin me-2"></i>VARRENDO BANCO DE DADOS...</td></tr>';
+                    adminTableBody.innerHTML = '<tr><td colspan="2" class="text-center py-4" style="color: var(--cyber-gold); font-family: monospace;"><i class="fa-solid fa-circle-notch fa-spin me-2"></i>VARRENDO...</td></tr>';
 
                     fetch(`?president_id=${presidentId}&q=${encodeURIComponent(query)}`)
                         .then(response => response.text())
@@ -218,16 +334,12 @@
                             const parser = new DOMParser();
                             const doc = parser.parseFromString(html, 'text/html');
                             const newTableBody = doc.getElementById('adminPlayerTableBody');
-
-                            if(newTableBody) {
-                                adminTableBody.innerHTML = newTableBody.innerHTML;
-                            }
-                        })
-                        .catch(error => console.error('Falha de conexão no radar:', error));
-                }, doneTypingInterval);
+                            if(newTableBody) adminTableBody.innerHTML = newTableBody.innerHTML;
+                        });
+                }, 300);
             });
         }
     });
+    {% endif %}
 </script>
-{% endif %}
 {% endblock %}
