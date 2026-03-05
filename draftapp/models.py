@@ -46,3 +46,23 @@ class Pick(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     pick_number = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    lineup_slot = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.pick_number} - {self.player.name}"
+
+
+class TradeOffer(models.Model):
+    draft = models.ForeignKey(Draft, on_delete=models.CASCADE)
+    proposer = models.ForeignKey(User, related_name='proposed_trades', on_delete=models.CASCADE)
+    target = models.ForeignKey(User, related_name='received_trades', on_delete=models.CASCADE)
+
+    offered_picks = models.ManyToManyField(Pick, related_name='offered_in_trades')
+    requested_picks = models.ManyToManyField(Pick, related_name='requested_in_trades')
+
+    status = models.CharField(max_length=20, default='PENDING')  # PENDING, ACCEPTED, REJECTED, CANCELED
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Troca: {self.proposer.username} -> {self.target.username} ({self.status})"

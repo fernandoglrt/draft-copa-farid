@@ -2,7 +2,7 @@
 {% block content %}
 <style>
     /* ==========================================
-       TEMA TEAMS (CYBERPUNK)
+       TEMA TEAMS & TRADES (CYBERPUNK)
        ========================================== */
     :root {
         --cyber-gold: #FFD700;
@@ -10,15 +10,41 @@
         --cyber-border: rgba(255, 215, 0, 0.3);
         --cyber-bg-panel: rgba(15, 32, 39, 0.85);
         --cyber-danger: #ff003c;
+        --cyber-trade: #00e5ff;
+        --cyber-success: #00ff88;
     }
 
     .filter-panel { background: var(--cyber-bg-panel); border: 1px solid var(--cyber-border); border-radius: 4px; backdrop-filter: blur(10px); padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .input-cyber { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px; width: 100%; border-radius: 2px; font-size: 1.1rem; transition: 0.3s; }
     .input-cyber:focus { border-color: var(--cyber-gold); outline: none; box-shadow: 0 0 15px rgba(255, 215, 0, 0.1); }
+
     .btn-cyber-outline { background: transparent; border: 1px solid var(--cyber-gold); color: var(--cyber-gold); padding: 8px 15px; font-weight: bold; text-transform: uppercase; transition: 0.3s; cursor: pointer; border-radius: 2px; }
     .btn-cyber-outline:hover { background: var(--cyber-gold); color: #000; }
+
     .btn-danger-cyber { background: transparent; border: 1px solid var(--cyber-danger); color: var(--cyber-danger); padding: 6px 12px; text-transform: uppercase; font-weight: bold; cursor: pointer; transition: 0.3s; border-radius: 2px; }
     .btn-danger-cyber:hover { background: var(--cyber-danger); color: white; box-shadow: 0 0 10px var(--cyber-danger); }
+
+    /* Estilo do Botão Trade */
+    .btn-trade { background: transparent; border: 2px solid var(--cyber-trade); color: var(--cyber-trade); padding: 10px 20px; font-weight: 900; text-transform: uppercase; border-radius: 2px; transition: 0.3s; }
+    .btn-trade:hover { background: var(--cyber-trade); color: #000; box-shadow: 0 0 15px var(--cyber-trade); }
+
+    .btn-save-lineup { background: var(--cyber-gold); color: #000; border: none; padding: 12px 25px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-radius: 2px; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+    .btn-save-lineup:hover { background: #fff; box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); }
+
+    /* TRADE CENTER NOTIFICATIONS */
+    .trade-alert-panel { background: rgba(0, 229, 255, 0.1); border: 2px solid var(--cyber-trade); padding: 15px; border-radius: 5px; margin-bottom: 25px; }
+    .trade-box { background: rgba(0,0,0,0.5); padding: 10px; margin-top: 10px; border-left: 3px solid var(--cyber-trade); }
+    .trade-player-badge { display: inline-block; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 3px; font-size: 0.85rem; margin: 2px; color: var(--cyber-gold);}
+
+    /* Modal Trade Estilo */
+    .modal-content-cyber { background-color: var(--cyber-dark); border: 1px solid var(--cyber-trade); box-shadow: 0 0 30px rgba(0, 229, 255, 0.3); color: white; border-radius: 5px; }
+    .trade-list { max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.4); padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
+
+    /* Custom Checkboxes for Trades */
+    .trade-checkbox { display: none; }
+    .trade-label { display: block; padding: 10px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px; cursor: pointer; transition: 0.2s; border-radius: 3px; }
+    .trade-label:hover { background: rgba(255,255,255,0.05); }
+    .trade-checkbox:checked + .trade-label { background: rgba(0, 229, 255, 0.2); border-color: var(--cyber-trade); box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.2); }
 
     .table-cyber { width: 100%; border-collapse: separate; border-spacing: 0 8px; color: white; }
     .table-cyber thead th { background: rgba(0,0,0,0.8); color: var(--cyber-gold); border: none; font-size: 0.9rem; padding: 15px; text-transform: uppercase; }
@@ -31,101 +57,103 @@
     /* ==========================================
        CAMPO DE FUTEBOL E CARDS (SQUAD BUILDER)
        ========================================== */
-    .pitch-container {
-        position: relative;
-        width: 100%;
-        height: 680px; /* Aumentei um pouco a altura para caber os cards maiores */
-        background: repeating-linear-gradient(0deg, #1b4d24, #1b4d24 10%, #1e5528 10%, #1e5528 20%);
-        border: 4px solid white;
-        border-radius: 5px;
-        overflow: hidden;
-        margin-bottom: 20px;
-    }
-
-    /* Linhas do Campo */
+    .pitch-container { position: relative; width: 100%; height: 680px; background: repeating-linear-gradient(0deg, #1b4d24, #1b4d24 10%, #1e5528 10%, #1e5528 20%); border: 4px solid white; border-radius: 5px; overflow: hidden; margin-bottom: 20px; }
     .pitch-line-center { position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: white; transform: translateY(-50%); }
     .pitch-circle { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); }
     .pitch-box-top { position: absolute; top: 0; left: 50%; width: 300px; height: 100px; border: 2px solid white; border-top: none; transform: translateX(-50%); }
     .pitch-box-bottom { position: absolute; bottom: 0; left: 50%; width: 300px; height: 100px; border: 2px solid white; border-bottom: none; transform: translateX(-50%); }
 
-    /* Slots de Posição no Campo - AUMENTADOS PARA CABER OS STATUS */
-    .formation-slot {
-        position: absolute;
-        width: 95px;
-        height: 140px;
-        transform: translate(-50%, -50%);
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px dashed rgba(255, 255, 255, 0.4);
-        border-radius: 5px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
+    .formation-slot { position: absolute; width: 95px; height: 140px; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.3); border: 1px dashed rgba(255, 255, 255, 0.4); border-radius: 5px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .slot-label { color: rgba(255,255,255,0.5); font-weight: bold; position: absolute; z-index: 0; font-size: 1.5rem; }
 
-    /* Posições Táticas (Padrão 4-3-3) */
-    .pos-st { top: 12%; left: 50%; }
-    .pos-lw { top: 22%; left: 20%; }
-    .pos-rw { top: 22%; left: 80%; }
-    .pos-cm-l { top: 40%; left: 35%; }
-    .pos-cm-c { top: 50%; left: 50%; }
-    .pos-cm-r { top: 40%; left: 65%; }
-    .pos-lb { top: 70%; left: 15%; }
-    .pos-cb-l { top: 75%; left: 35%; }
-    .pos-cb-r { top: 75%; left: 65%; }
-    .pos-rb { top: 70%; left: 85%; }
+    .pos-st { top: 12%; left: 50%; } .pos-lw { top: 22%; left: 20%; } .pos-rw { top: 22%; left: 80%; }
+    .pos-cm-l { top: 40%; left: 35%; } .pos-cm-c { top: 50%; left: 50%; } .pos-cm-r { top: 40%; left: 65%; }
+    .pos-lb { top: 70%; left: 15%; } .pos-cb-l { top: 75%; left: 35%; } .pos-cb-r { top: 75%; left: 65%; } .pos-rb { top: 70%; left: 85%; }
     .pos-gk { top: 86%; left: 50%; }
 
-    /* Card Estilo FUT */
-    .player-card-mini {
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-        border: 2px solid var(--cyber-gold);
-        border-radius: 5px;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        padding: 5px;
-        cursor: grab;
-        z-index: 2;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.6);
-    }
-    .player-card-mini:active { cursor: grabbing; box-shadow: 0 0 15px var(--cyber-gold); }
-
+    .player-card-mini { width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a1a, #2a2a2a); border: 2px solid var(--cyber-gold); border-radius: 5px; color: white; display: flex; flex-direction: column; padding: 5px; cursor: grab; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+    .player-card-mini.locked { cursor: not-allowed; border-color: #555; opacity: 0.9;}
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
     .card-ovr { font-size: 1.3rem; font-weight: 900; color: var(--cyber-gold); line-height: 1; }
     .card-pos { font-size: 0.8rem; font-weight: bold; color: #ccc; }
     .card-name { font-size: 0.75rem; font-weight: bold; text-align: center; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 4px 0; }
-
-    /* Grid de Status do Jogador (PAC, SHO, etc) */
-    .card-stats {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1px 6px;
-        font-size: 0.65rem;
-        border-top: 1px solid rgba(255, 215, 0, 0.3);
-        padding-top: 5px;
-        margin-top: auto;
-    }
+    .card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px 6px; font-size: 0.65rem; border-top: 1px solid rgba(255, 215, 0, 0.3); padding-top: 5px; margin-top: auto; }
     .stat-row { display: flex; justify-content: space-between; }
     .stat-val { font-weight: 900; color: white; }
     .stat-name { color: #888; font-weight: bold; }
 
-    .bench-container {
-        background: rgba(0,0,0,0.5);
-        border: 1px solid var(--cyber-border);
-        min-height: 160px;
-        padding: 15px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
+    .bench-container { background: rgba(0,0,0,0.5); border: 1px solid var(--cyber-border); min-height: 160px; padding: 15px; display: flex; flex-wrap: wrap; gap: 10px; }
     .bench-container .player-card-mini { width: 95px; height: 140px; }
 </style>
 
 <div class="animate__animated animate__fadeInDown">
+
+    {% if pending_received_trades or pending_sent_trades %}
+    <div class="trade-alert-panel">
+        <h4 style="color: var(--cyber-trade); font-weight: 900; margin-bottom: 15px;">
+            <i class="fa-solid fa-handshake me-2"></i>Café Presidente?: NEGOCIAÇÕES ATIVAS
+        </h4>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-white fw-bold">PROPOSTAS RECEBIDAS (Para você decidir)</h6>
+                {% for trade in pending_received_trades %}
+                <div class="trade-box">
+                    <p class="m-0" style="color: #aaa; font-size: 0.9rem;">De: <strong class="text-white">{{ trade.proposer.username|upper }}</strong></p>
+                    <div class="mt-2 mb-2">
+                        <strong style="color: var(--cyber-danger);">Ele quer:</strong>
+                        {% for req in trade.requested_picks.all %} <span class="trade-player-badge">{{ req.player.name }} ({{ req.player.overall }})</span> {% endfor %}
+                        <br>
+                        <strong style="color: var(--cyber-success);">Em troca de:</strong>
+                        {% for off in trade.offered_picks.all %} <span class="trade-player-badge">{{ off.player.name }} ({{ off.player.overall }})</span> {% endfor %}
+                    </div>
+                    <div class="d-flex gap-2">
+                        <form method="POST" class="m-0">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="accept_trade">
+                            <input type="hidden" name="trade_id" value="{{ trade.id }}">
+                            <button type="submit" class="btn btn-sm btn-success fw-bold">ACEITAR TROCA</button>
+                        </form>
+                        <form method="POST" class="m-0">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="reject_trade">
+                            <input type="hidden" name="trade_id" value="{{ trade.id }}">
+                            <button type="submit" class="btn btn-sm btn-danger fw-bold">RECUSAR</button>
+                        </form>
+                        <a href="?president_id={{ trade.proposer.id }}&open_trade=true" class="btn btn-sm btn-outline-info fw-bold">CONTRAPROPOR</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p style="color: #666; font-style: italic;">Nenhuma proposta recebida.</p>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6">
+                <h6 class="text-white fw-bold">PROPOSTAS ENVIADAS (Aguardando resposta)</h6>
+                {% for trade in pending_sent_trades %}
+                <div class="trade-box" style="border-left-color: #666;">
+                    <p class="m-0" style="color: #aaa; font-size: 0.9rem;">Para: <strong class="text-white">{{ trade.target.username|upper }}</strong></p>
+                    <div class="mt-2 mb-2">
+                        <strong style="color: var(--cyber-danger);">Você pediu:</strong>
+                        {% for req in trade.requested_picks.all %} <span class="trade-player-badge">{{ req.player.name }}</span> {% endfor %}
+                        <br>
+                        <strong style="color: var(--cyber-success);">Você ofereceu:</strong>
+                        {% for off in trade.offered_picks.all %} <span class="trade-player-badge">{{ off.player.name }}</span> {% endfor %}
+                    </div>
+                    <form method="POST" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="cancel_trade">
+                        <input type="hidden" name="trade_id" value="{{ trade.id }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger fw-bold">CANCELAR PROPOSTA</button>
+                    </form>
+                </div>
+                {% empty %}
+                <p style="color: #666; font-style: italic;">Nenhuma proposta pendente.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="fw-bold text-warning text-uppercase m-0" style="letter-spacing: 2px;">
@@ -179,167 +207,231 @@
     </div>
     {% endif %}
 
-    <div class="filter-panel">
-        <h4 style="color: white; text-transform: uppercase; margin-bottom: 20px; font-weight: 800; letter-spacing: 1px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 style="color: white; text-transform: uppercase; margin: 0; font-weight: 800; letter-spacing: 1px;">
             <i class="fa-solid fa-chess-board me-2"></i>Squad Builder (4-3-3)
         </h4>
 
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="pitch-container">
-                    <div class="pitch-line-center"></div>
-                    <div class="pitch-circle"></div>
-                    <div class="pitch-box-top"></div>
-                    <div class="pitch-box-bottom"></div>
+        <div class="d-flex gap-3">
+            {% if request.user.is_authenticated and request.user.id != selected_president_id %}
+            <button type="button" class="btn-trade" data-bs-toggle="modal" data-bs-target="#tradeModal" id="btnOpenTradeModal">
+                <i class="fa-solid fa-handshake me-2"></i>Propor Troca
+            </button>
+            {% endif %}
 
-                    <div class="formation-slot pos-st" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">ST</span></div>
-                    <div class="formation-slot pos-lw" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">LW</span></div>
-                    <div class="formation-slot pos-rw" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">RW</span></div>
-
-                    <div class="formation-slot pos-cm-l" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
-                    <div class="formation-slot pos-cm-c" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
-                    <div class="formation-slot pos-cm-r" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
-
-                    <div class="formation-slot pos-lb" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">LB</span></div>
-                    <div class="formation-slot pos-cb-l" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CB</span></div>
-                    <div class="formation-slot pos-cb-r" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CB</span></div>
-                    <div class="formation-slot pos-rb" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">RB</span></div>
-
-                    <div class="formation-slot pos-gk" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">GK</span></div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <h6 style="color: var(--cyber-gold); text-transform: uppercase; font-weight: bold;">Banco / Não Relacionados</h6>
-                <p style="font-size: 0.8rem; color: #888;">Arraste os cards para o campo para montar o time.</p>
-
-                <div class="bench-container" id="bench" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    {% for pick in selected_picks %}
-                    <div class="player-card-mini" id="card-{{ pick.id }}" draggable="true" ondragstart="drag(event)">
-                        <div class="card-top">
-                            <span class="card-ovr">{{ pick.player.overall }}</span>
-                            <span class="card-pos">{{ pick.player.position }}</span>
-                        </div>
-                        <div class="card-name" title="{{ pick.player.name }}">{{ pick.player.name }}</div>
-
-                        <div class="card-stats">
-                            <div class="stat-row"><span class="stat-val">{{ pick.player.pace }}</span><span class="stat-name">PAC</span></div>
-                            <div class="stat-row"><span class="stat-val">{{ pick.player.dribbling }}</span><span class="stat-name">DRI</span></div>
-                            <div class="stat-row"><span class="stat-val">{{ pick.player.shooting }}</span><span class="stat-name">SHO</span></div>
-                            <div class="stat-row"><span class="stat-val">{{ pick.player.defending }}</span><span class="stat-name">DEF</span></div>
-                            <div class="stat-row"><span class="stat-val">{{ pick.player.passing }}</span><span class="stat-name">PAS</span></div>
-                            <div class="stat-row"><span class="stat-val">{{ pick.player.physical }}</span><span class="stat-name">PHY</span></div>
-                        </div>
-
-                    </div>
-                    {% empty %}
-                    <span style="color: #666; font-style: italic;">Nenhum jogador draftado ainda.</span>
-                    {% endfor %}
-                </div>
-
-                <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-
-                <h6 style="color: #aaa; text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">Lista Completa</h6>
-                <div style="max-height: 250px; overflow-y: auto;">
-                    <table class="table-cyber" style="font-size: 0.8rem;">
-                        <tbody>
-                            {% for pick in selected_picks %}
-                            <tr>
-                                <td style="padding: 8px;"><strong>{{ pick.player.name }}</strong></td>
-                                <td style="padding: 8px; color: var(--cyber-gold);">{{ pick.player.overall }}</td>
-                                <td style="padding: 8px;">{{ pick.player.position }}</td>
-                                {% if request.user.is_superuser %}
-                                <td style="padding: 8px; text-align: right;">
-                                    <form method="POST" onsubmit="return confirm('Excluir pick?');" style="margin: 0;">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="action" value="delete_pick">
-                                        <input type="hidden" name="pick_id" value="{{ pick.id }}">
-                                        <button type="submit" class="btn-danger-cyber" style="font-size: 0.6rem; padding: 2px 5px;">X</button>
-                                    </form>
-                                </td>
-                                {% endif %}
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {% if request.user.id == selected_president_id or request.user.is_superuser %}
+            <button type="button" class="btn-save-lineup" onclick="document.getElementById('lineupForm').submit();">
+                <i class="fa-solid fa-floppy-disk me-2"></i>Salvar Escalação
+            </button>
+            {% else %}
+            <span class="badge bg-danger p-3" style="font-size: 1rem;"><i class="fa-solid fa-lock me-2"></i>Apenas Visualização</span>
+            {% endif %}
         </div>
     </div>
+
+    <form method="POST" id="lineupForm">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save_lineup">
+
+        <div class="filter-panel pt-4">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="pitch-container">
+                        <div class="pitch-line-center"></div><div class="pitch-circle"></div><div class="pitch-box-top"></div><div class="pitch-box-bottom"></div>
+                        <div class="formation-slot pos-st" id="pos-st" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">ST</span></div>
+                        <div class="formation-slot pos-lw" id="pos-lw" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">LW</span></div>
+                        <div class="formation-slot pos-rw" id="pos-rw" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">RW</span></div>
+                        <div class="formation-slot pos-cm-l" id="pos-cm-l" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
+                        <div class="formation-slot pos-cm-c" id="pos-cm-c" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
+                        <div class="formation-slot pos-cm-r" id="pos-cm-r" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CM</span></div>
+                        <div class="formation-slot pos-lb" id="pos-lb" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">LB</span></div>
+                        <div class="formation-slot pos-cb-l" id="pos-cb-l" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CB</span></div>
+                        <div class="formation-slot pos-cb-r" id="pos-cb-r" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">CB</span></div>
+                        <div class="formation-slot pos-rb" id="pos-rb" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">RB</span></div>
+                        <div class="formation-slot pos-gk" id="pos-gk" ondrop="drop(event)" ondragover="allowDrop(event)"><span class="slot-label">GK</span></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <h6 style="color: var(--cyber-gold); text-transform: uppercase; font-weight: bold;">Banco / Não Relacionados</h6>
+                    <div class="bench-container" id="bench" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        {% for pick in selected_picks %}
+                        <div class="player-card-mini {% if request.user.id != selected_president_id and not request.user.is_superuser %}locked{% endif %}"
+                             id="card-{{ pick.id }}" data-slot="{{ pick.lineup_slot|default:'bench' }}"
+                             draggable="{% if request.user.id == selected_president_id or request.user.is_superuser %}true{% else %}false{% endif %}"
+                             ondragstart="drag(event)">
+                            <input type="hidden" name="pick_{{ pick.id }}" class="slot-input" value="{{ pick.lineup_slot|default:'bench' }}">
+                            <div class="card-top"><span class="card-ovr">{{ pick.player.overall }}</span><span class="card-pos">{{ pick.player.position }}</span></div>
+                            <div class="card-name" title="{{ pick.player.name }}">{{ pick.player.name }}</div>
+                            <div class="card-stats">
+                                <div class="stat-row"><span class="stat-val">{{ pick.player.pace }}</span><span class="stat-name">PAC</span></div>
+                                <div class="stat-row"><span class="stat-val">{{ pick.player.dribbling }}</span><span class="stat-name">DRI</span></div>
+                                <div class="stat-row"><span class="stat-val">{{ pick.player.shooting }}</span><span class="stat-name">SHO</span></div>
+                                <div class="stat-row"><span class="stat-val">{{ pick.player.defending }}</span><span class="stat-name">DEF</span></div>
+                                <div class="stat-row"><span class="stat-val">{{ pick.player.passing }}</span><span class="stat-name">PAS</span></div>
+                                <div class="stat-row"><span class="stat-val">{{ pick.player.physical }}</span><span class="stat-name">PHY</span></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+                    <h6 style="color: #aaa; text-transform: uppercase; font-weight: bold; margin-bottom: 10px;">Lista Completa do Elenco</h6>
+                    <div style="max-height: 250px; overflow-y: auto;">
+                        <table class="table-cyber" style="font-size: 0.8rem;">
+                            <tbody>
+                                {% for pick in selected_picks %}
+                                <tr>
+                                    <td style="padding: 8px;"><strong>{{ pick.player.name }}</strong></td>
+                                    <td style="padding: 8px; color: var(--cyber-gold);">{{ pick.player.overall }}</td>
+                                    <td style="padding: 8px;">{{ pick.player.position }}</td>
+                                    {% if request.user.is_superuser %}
+                                    <td style="padding: 8px; text-align: right;">
+                                        <form method="POST" onsubmit="return confirm('Excluir pick?');" style="margin: 0;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="delete_pick">
+                                            <input type="hidden" name="pick_id" value="{{ pick.id }}">
+                                            <button type="submit" class="btn-danger-cyber" style="font-size: 0.6rem; padding: 2px 5px;">X</button>
+                                        </form>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </form>
 </div>
+
+<input type="hidden" id="csrfToken" value="{{ csrf_token }}">
+
+<div class="modal fade" id="tradeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content modal-content-cyber">
+      <div class="modal-header modal-header-cyber">
+        <h5 class="modal-title fw-bold" style="color: var(--cyber-trade); text-transform: uppercase; letter-spacing: 1px;">
+            <i class="fa-solid fa-handshake-angle me-2"></i> Negociar Elenco
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="propose_trade">
+          <div class="modal-body p-4">
+              <div class="row g-4">
+
+                  <div class="col-md-6 border-end border-secondary">
+                      <h6 class="text-center fw-bold" style="color: var(--cyber-danger);"><i class="fa-solid fa-arrow-up-from-bracket me-2"></i>VOCÊ OFERECE:</h6>
+                      <p class="text-center text-muted" style="font-size: 0.8rem;">Selecione os jogadores do SEU time.</p>
+                      <div class="trade-list">
+                          {% for pick in my_picks %}
+                          <input type="checkbox" name="offered_picks" value="{{ pick.id }}" id="off-{{ pick.id }}" class="trade-checkbox">
+                          <label for="off-{{ pick.id }}" class="trade-label">
+                              <div class="d-flex justify-content-between align-items-center">
+                                  <strong>{{ pick.player.name }}</strong>
+                                  <div>
+                                      <span class="badge bg-secondary me-2">{{ pick.player.position }}</span>
+                                      <strong style="color: var(--cyber-gold); font-size: 1.1rem;">{{ pick.player.overall }}</strong>
+                                  </div>
+                              </div>
+                          </label>
+                          {% empty %}
+                          <p class="text-center mt-4">Você ainda não tem jogadores.</p>
+                          {% endfor %}
+                      </div>
+                  </div>
+
+                  <div class="col-md-6">
+                      <h6 class="text-center fw-bold" style="color: var(--cyber-success);"><i class="fa-solid fa-arrow-right-to-bracket me-2"></i>VOCÊ QUER RECEBER:</h6>
+                      <p class="text-center text-muted" style="font-size: 0.8rem;">Selecione os jogadores do alvo.</p>
+                      <div class="trade-list">
+                          {% for pick in selected_picks %}
+                          <input type="checkbox" name="requested_picks" value="{{ pick.id }}" id="req-{{ pick.id }}" class="trade-checkbox">
+                          <label for="req-{{ pick.id }}" class="trade-label">
+                              <div class="d-flex justify-content-between align-items-center">
+                                  <strong>{{ pick.player.name }}</strong>
+                                  <div>
+                                      <span class="badge bg-secondary me-2">{{ pick.player.position }}</span>
+                                      <strong style="color: var(--cyber-gold); font-size: 1.1rem;">{{ pick.player.overall }}</strong>
+                                  </div>
+                              </div>
+                          </label>
+                          {% empty %}
+                          <p class="text-center mt-4">Este time não tem jogadores.</p>
+                          {% endfor %}
+                      </div>
+                  </div>
+
+              </div>
+          </div>
+          <div class="modal-footer modal-footer-cyber">
+            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-trade" style="background: var(--cyber-trade); color: black;">ENVIAR PROPOSTA</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
-    /* ==========================================
-       LÓGICA DE DRAG AND DROP (SQUAD BUILDER)
-       ========================================== */
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
+    document.addEventListener("DOMContentLoaded", function() {
+        // Posicionamento do Squad Builder
+        document.querySelectorAll('.player-card-mini').forEach(card => {
+            const savedSlot = card.getAttribute('data-slot');
+            if (savedSlot && savedSlot !== 'bench' && savedSlot !== 'None') {
+                const slotEl = document.getElementById(savedSlot);
+                if (slotEl) slotEl.appendChild(card);
+            }
+        });
 
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.currentTarget.id);
-    }
+        // MÁGICA DO BOTÃO CONTRAPROPOR
+        // Se a URL tiver ?open_trade=true, ele clica sozinho no botão de abrir o modal
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('open_trade') === 'true') {
+            const tradeModalBtn = document.getElementById('btnOpenTradeModal');
+            if(tradeModalBtn) {
+                tradeModalBtn.click();
+            }
+        }
+    });
 
+    // Lógica Drag and Drop
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.currentTarget.id); }
     function drop(ev) {
         ev.preventDefault();
         var data = ev.dataTransfer.getData("text");
         var draggedElement = document.getElementById(data);
-
         var dropTarget = ev.target;
 
         if (dropTarget.classList.contains('slot-label') || dropTarget.classList.contains('card-stats') || dropTarget.closest('.player-card-mini')) {
-            // Se soltar em cima do label ou de outro card, tentamos achar o slot pai
             dropTarget = dropTarget.closest('.formation-slot');
         }
+        let slotId = 'bench';
 
         if (dropTarget && dropTarget.classList.contains('formation-slot')) {
             const cardsInSlot = dropTarget.querySelectorAll('.player-card-mini');
             if (cardsInSlot.length > 0) {
-                // Se já tiver card, joga ele de volta pro banco antes de botar o novo
                 const bench = document.getElementById('bench');
-                bench.appendChild(cardsInSlot[0]);
+                const kickedCard = cardsInSlot[0];
+                bench.appendChild(kickedCard);
+                kickedCard.querySelector('.slot-input').value = 'bench';
             }
             dropTarget.appendChild(draggedElement);
+            slotId = dropTarget.id;
         }
         else if (ev.target.id === 'bench' || ev.target.closest('.bench-container')) {
             const bench = document.getElementById('bench');
             bench.appendChild(draggedElement);
         }
+        draggedElement.querySelector('.slot-input').value = slotId;
     }
-
-    /* ==========================================
-       BUSCA ADMIN
-       ========================================== */
-    {% if request.user.is_superuser %}
-    document.addEventListener("DOMContentLoaded", function() {
-        const adminSearchInput = document.getElementById('adminLiveSearch');
-        const adminTableBody = document.getElementById('adminPlayerTableBody');
-        const presidentSelect = document.querySelector('select[name="president_id"]');
-        let typingTimer;
-
-        if (adminSearchInput) {
-            adminSearchInput.addEventListener('keyup', function() {
-                clearTimeout(typingTimer);
-                const query = adminSearchInput.value;
-                const presidentId = presidentSelect.value;
-
-                typingTimer = setTimeout(function() {
-                    adminTableBody.innerHTML = '<tr><td colspan="2" class="text-center py-4" style="color: var(--cyber-gold); font-family: monospace;"><i class="fa-solid fa-circle-notch fa-spin me-2"></i>VARRENDO...</td></tr>';
-
-                    fetch(`?president_id=${presidentId}&q=${encodeURIComponent(query)}`)
-                        .then(response => response.text())
-                        .then(html => {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
-                            const newTableBody = doc.getElementById('adminPlayerTableBody');
-                            if(newTableBody) adminTableBody.innerHTML = newTableBody.innerHTML;
-                        });
-                }, 300);
-            });
-        }
-    });
-    {% endif %}
 </script>
 {% endblock %}
